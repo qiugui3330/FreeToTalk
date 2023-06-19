@@ -8,6 +8,7 @@ class DatabaseHelper {
   static final table = 'user';
 
   static final columnId = '_id';
+  static final columnUsername = 'username';
   static final columnEmail = 'email';
   static final columnPassword = 'password';
 
@@ -35,6 +36,7 @@ class DatabaseHelper {
     await db.execute('''
           CREATE TABLE $table (
             $columnId INTEGER PRIMARY KEY,
+            $columnUsername TEXT NOT NULL,
             $columnEmail TEXT NOT NULL,
             $columnPassword TEXT NOT NULL
           )

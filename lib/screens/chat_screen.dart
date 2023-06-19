@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:chatgpt_course/constants/constants.dart';
 import 'package:chatgpt_course/providers/chats_provider.dart';
 import 'package:chatgpt_course/services/services.dart';
+import 'package:chatgpt_course/services/user_model.dart';
 import 'package:chatgpt_course/widgets/chat_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -14,7 +15,9 @@ import '../services/assets_manager.dart';
 import '../widgets/text_widget.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
+  final User user; // Here, add the User type parameter
+
+  const ChatScreen({Key? key, required this.user}) : super(key: key); // Modify the constructor to include User parameter
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();

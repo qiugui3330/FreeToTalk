@@ -15,8 +15,9 @@ class AuthenticationService {
     return null;
   }
 
-  Future<bool> register(String email, String password) async {
+  Future<bool> register(String username, String email, String password) async {
     Map<String, dynamic> row = {
+      DatabaseHelper.columnUsername: username,
       DatabaseHelper.columnEmail : email,
       DatabaseHelper.columnPassword : password
     };
