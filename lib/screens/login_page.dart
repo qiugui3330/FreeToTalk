@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:chatgpt_course/authentication_service.dart';
+import 'package:chatgpt_course/services/authentication_service.dart';
 import 'package:flutter/services.dart';
 import 'package:chatgpt_course/screens/chat_screen.dart';
 import 'package:chatgpt_course/screens/register_page.dart';

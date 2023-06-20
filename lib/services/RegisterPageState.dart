@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'authentication_service.dart';
-import 'screens/login_page.dart';
+import '../screens/login_page.dart';
 
 
 class _RegisterPageState extends State<RegisterPage> {
