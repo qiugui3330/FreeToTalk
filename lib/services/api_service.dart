@@ -69,7 +69,7 @@ class ApiService {
         // log("jsonResponse[choices]text ${jsonResponse["choices"][0]["text"]}");
         chatList = List.generate(
           jsonResponse["choices"].length,
-          (index) => ChatModel(
+              (index) => ChatModel(
             msg: jsonResponse["choices"][index]["message"]["content"],
             chatIndex: 1,
           ),
@@ -114,7 +114,7 @@ class ApiService {
         // log("jsonResponse[choices]text ${jsonResponse["choices"][0]["text"]}");
         chatList = List.generate(
           jsonResponse["choices"].length,
-          (index) => ChatModel(
+              (index) => ChatModel(
             msg: jsonResponse["choices"][index]["text"],
             chatIndex: 1,
           ),

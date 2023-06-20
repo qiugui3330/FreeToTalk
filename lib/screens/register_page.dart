@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:chatgpt_course/authentication_service.dart';
 import 'package:flutter/services.dart';
 import 'package:chatgpt_course/screens/chat_screen.dart';
-import 'package:chatgpt_course/login_page.dart';
+import 'package:chatgpt_course/screens/login_page.dart';
 import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -98,7 +98,7 @@ class _RegisterPageState extends State<RegisterPage> {
     if (_formKey.currentState!.validate()) {
       var authService = Provider.of<AuthenticationService>(context, listen: false);
       var success = await authService.register(_username.text, _email.text, _password.text);
-      if (success) {
+      if (success != null) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => LoginPage()),

@@ -2,10 +2,11 @@ import 'package:chatgpt_course/providers/models_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'authentication_service.dart';
 import 'constants/constants.dart';
 import 'providers/chats_provider.dart';
 import 'screens/chat_screen.dart';
-import 'login_page.dart'; // 确保你的路径是正确的
+import 'screens/login_page.dart'; // 确保你的路径是正确的
 
 void main() {
   runApp(const MyApp());
@@ -25,6 +26,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => ChatProvider(),
         ),
+        Provider(
+          create: (_) => AuthenticationService(),
+        ),
       ],
       child: MaterialApp(
         title: 'FreeToTalk',
@@ -39,3 +43,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
