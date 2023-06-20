@@ -15,9 +15,9 @@ import '../services/assets_manager.dart';
 import '../widgets/text_widget.dart';
 
 class ChatScreen extends StatefulWidget {
-  final User user; // Here, add the User type parameter
+  final User user;
 
-  const ChatScreen({Key? key, required this.user}) : super(key: key); // Modify the constructor to include User parameter
+  const ChatScreen({Key? key, required this.user}) : super(key: key);
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -29,6 +29,7 @@ class _ChatScreenState extends State<ChatScreen> {
   late TextEditingController textEditingController;
   late ScrollController _listScrollController;
   late FocusNode focusNode;
+
   @override
   void initState() {
     _listScrollController = ScrollController();
@@ -45,7 +46,6 @@ class _ChatScreenState extends State<ChatScreen> {
     super.dispose();
   }
 
-  // List<ChatModel> chatList = [];
   @override
   Widget build(BuildContext context) {
     final modelsProvider = Provider.of<ModelsProvider>(context);
@@ -53,15 +53,17 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 2,
-        leading: Icon(
-          LineAwesomeIcons.arrow_left,
-          color: Colors.black87,
-        ),
+        leading: Builder(builder: (BuildContext context) {
+          return IconButton(
+            icon: Icon(LineAwesomeIcons.bars, color: Colors.black),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          );
+        }),
         title: Row(
           children: [
             Container(
-              // padding: EdgeInsets.all(8),
-              // margin: EdgeInsets.all(5),
               height: 40,
               width: 40,
               decoration: BoxDecoration(
@@ -89,18 +91,17 @@ class _ChatScreenState extends State<ChatScreen> {
                   Text(
                     'GPT',
                     style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.green,
-                        fontWeight: FontWeight.bold),
-                  )
+                      fontSize: 12,
+                      color: Colors.green,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
             ),
           ],
         ),
         actions: [
-
-       
           SizedBox(
             width: 5,
           ),
@@ -119,38 +120,62 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         ],
       ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Text('Drawer Header'),
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(244, 243, 246, 1),
+              ),
+            ),
+            ListTile(
+              title: Text('Item 1'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Item 2'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
       body: SafeArea(
         child: Column(
           children: [
             Flexible(
               child: ListView.builder(
-                  controller: _listScrollController,
-                  itemCount: chatProvider.getChatList.length, //chatList.length,
-                  itemBuilder: (context, index) {
-                    return ChatWidget(
-                      msg: chatProvider
-                          .getChatList[index].msg, // chatList[index].msg,
-                      chatIndex: chatProvider.getChatList[index]
-                          .chatIndex, //chatList[index].chatIndex,
-                      shouldAnimate:
-                          chatProvider.getChatList.length - 1 == index,
-                    );
-                  }),
-            ),
-            if (_isTyping) ...[
-              const SpinKitThreeBounce(
-                color: Colors.black87,
-                size: 18,
+                controller: _listScrollController,
+                itemCount: chatProvider.getChatList.length,
+                itemBuilder: (context, index) {
+                  return ChatWidget(
+                    msg: chatProvider.getChatList[index].msg,
+                    chatIndex: chatProvider.getChatList[index].chatIndex,
+                    shouldAnimate: chatProvider.getChatList.length - 1 == index,
+                  );
+                },
               ),
-            ],
+            ),
+            if (_isTyping)
+              ...[
+                const SpinKitThreeBounce(
+                  color: Colors.black87,
+                  size: 18,
+                ),
+              ],
             const SizedBox(
               height: 15,
             ),
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 10,vertical: 20),
+              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Color(0xFFf4f3f6),
+                color: Colors.grey[200],
                 border: Border.all(color: Colors.black87, width: 1.5),
                 borderRadius: BorderRadius.all(
                   Radius.circular(20.0),
@@ -173,20 +198,21 @@ class _ChatScreenState extends State<ChatScreen> {
                           controller: textEditingController,
                           onSubmitted: (value) async {
                             await sendMessageFCT(
-                                modelsProvider: modelsProvider,
-                                chatProvider: chatProvider);
+                              modelsProvider: modelsProvider,
+                              chatProvider: chatProvider,
+                            );
                           },
                           decoration: const InputDecoration.collapsed(
-                              hintText: "Let's go!",
-                              hintStyle: TextStyle(
-                                  color: Color.fromARGB(255, 97, 97, 97))),
+                            hintText: "Let's go!",
+                            hintStyle: TextStyle(
+                              color: Colors.grey,
+                            ),
+                          ),
                         ),
                       ),
-
                       SizedBox(
                         width: 40,
                       ),
-
                       SizedBox(
                         width: 50,
                       ),
@@ -195,25 +221,26 @@ class _ChatScreenState extends State<ChatScreen> {
                         width: 60,
                         height: 60,
                         decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Color.fromARGB(255, 64, 63, 63),
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(30),
-                            color: Colors.white),
+                          border: Border.all(
+                            color: Colors.grey,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(30),
+                          color: Colors.white,
+                        ),
                         child: Column(
                           children: [
                             Expanded(
                               child: IconButton(
-                                // alignment: Alignment.center,
                                 onPressed: () async {
                                   await sendMessageFCT(
-                                      modelsProvider: modelsProvider,
-                                      chatProvider: chatProvider);
+                                    modelsProvider: modelsProvider,
+                                    chatProvider: chatProvider,
+                                  );
                                 },
                                 icon: const Icon(
                                   LineAwesomeIcons.telegram_plane,
-                                  color: Color.fromARGB(221, 206, 125, 3),
+                                  color: Colors.orange,
                                   size: 30,
                                 ),
                               ),
@@ -231,6 +258,7 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
   }
+
 
   void scrollListToEND() {
     _listScrollController.animateTo(
