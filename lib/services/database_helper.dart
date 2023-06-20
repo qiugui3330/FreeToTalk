@@ -47,7 +47,17 @@ class DatabaseHelper {
 
   Future<int> insert(Map<String, dynamic> row) async {
     Database db = await instance.database;
-    return await db.insert(table, row);
+    int rowCount = Sqflite.firstIntValue(
+        await db.rawQuery('SELECT COUNT(*) FROM $table')) ?? 0;
+    row[columnId] = rowCount + 1;
+    int insertedId = await db.insert(table, row);
+
+    // Print all rows
+    List<Map<String, dynamic>> rows = await queryAllRows();
+    print('All Rows:');
+    rows.forEach((row) => print(row));
+
+    return insertedId;
   }
 
   Future<List<Map<String, dynamic>>> queryAllRows() async {

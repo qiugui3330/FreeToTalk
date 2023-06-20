@@ -15,7 +15,8 @@ class LoginPage extends StatelessWidget {
       // Status bar brightness
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        elevation: 0, systemOverlayStyle: SystemUiOverlayStyle.dark,
+        elevation: 0,
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -66,7 +67,9 @@ class LoginPage extends StatelessWidget {
                     // Navigate to chat screen
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ChatScreen(user: user)),
+                      MaterialPageRoute(
+                        builder: (context) => ChatScreen(user: user),
+                      ),
                     );
                   } else {
                     // Show error message
