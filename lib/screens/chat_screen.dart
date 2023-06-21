@@ -124,22 +124,38 @@ class _ChatScreenState extends State<ChatScreen> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            DrawerHeader(
-              child: Text('Drawer Header'),
+            UserAccountsDrawerHeader(
+              accountName: Text(
+                widget.user.username, // Change this line with your variable
+                style: TextStyle(color: Colors.black),
+              ),
+              accountEmail: Text(
+                widget.user.email, // Change this line with your variable
+                style: TextStyle(color: Colors.black),
+              ),
+              currentAccountPicture: CircleAvatar(
+                backgroundImage: AssetImage(AssetsManager.openaiLogo), // Change this line with your variable
+              ),
               decoration: BoxDecoration(
                 color: Color.fromRGBO(244, 243, 246, 1),
               ),
             ),
             ListTile(
-              title: Text('Item 1'),
+              title: Text('Option 1'),
               onTap: () {
-                Navigator.pop(context);
+                // Put your onTap function here
               },
             ),
             ListTile(
-              title: Text('Item 2'),
+              title: Text('Option 2'),
               onTap: () {
-                Navigator.pop(context);
+                // Put your onTap function here
+              },
+            ),
+            ListTile(
+              title: Text('To Be Determined'),
+              onTap: () {
+                // Put your onTap function here
               },
             ),
           ],

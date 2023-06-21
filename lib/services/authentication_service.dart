@@ -10,6 +10,7 @@ class AuthenticationService {
       if (user['email'] == email && user['password'] == password) {
         return User(
           id: user['_id'], // Use 'user['_id']' instead of 'user['id']'
+          username: user['username'],
           email: user['email'],
           password: user['password'],
         );
