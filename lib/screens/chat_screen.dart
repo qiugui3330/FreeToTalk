@@ -126,7 +126,7 @@ class _ChatScreenState extends State<ChatScreen> {
           children: <Widget>[
             UserAccountsDrawerHeader(
               accountName: Text(
-                widget.user.username, // Change this line with your variable
+                widget.user.username,
                 style: TextStyle(color: Colors.black),
               ),
               accountEmail: Text(

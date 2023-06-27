@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 
+import '../services/user_model.dart';
+
 class TextWidget extends StatelessWidget {
+
   const TextWidget(
       {Key? key,
-      required this.label,
-      this.fontSize = 14,
-      this.color,
-      this.fontWeight})
+        required this.label,
+        this.fontSize = 14,
+        this.color,
+        this.fontWeight,
+        this.user})
       : super(key: key);
 
   final String label;
   final double fontSize;
   final Color? color;
   final FontWeight? fontWeight;
+  final User? user;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -20,7 +25,7 @@ class TextWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('伊猪猪',style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: Colors.black87),),
+          Text(user?.username ?? 'User',style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: Colors.black87),),
           SizedBox(height: 5,),
           Container(
             padding: EdgeInsets.all(16),
