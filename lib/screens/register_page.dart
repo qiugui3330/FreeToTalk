@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:chatgpt_course/services/authentication_service.dart';
-import 'package:flutter/services.dart';
-import 'package:chatgpt_course/screens/chat_screen.dart';
 import 'package:chatgpt_course/screens/login_page.dart';
 import 'package:provider/provider.dart';
+import 'package:chatgpt_course/services/RegisterPageState.dart';
 
 class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  RegisterPageState createState() => RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class RegisterPageState extends State<RegisterPage> {
   final TextEditingController _username = TextEditingController();
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();

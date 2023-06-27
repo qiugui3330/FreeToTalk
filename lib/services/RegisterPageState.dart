@@ -6,7 +6,7 @@ import 'authentication_service.dart';
 import '../screens/login_page.dart';
 
 
-class _RegisterPageState extends State<RegisterPage> {
+class RegisterPageState extends State<RegisterPage> {
   final TextEditingController _username = TextEditingController();
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
