@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:chatgpt_course/services/authentication_service.dart';
 import 'package:flutter/services.dart';
 import 'package:chatgpt_course/screens/chat_screen.dart';
-import 'package:chatgpt_course/screens/register_page.dart';
+import 'package:chatgpt_course/auth/register_page.dart';
+import 'package:chatgpt_course/widgets/CustomTextField.dart';
 
 class LoginPage extends StatelessWidget {
   final emailController = TextEditingController();
@@ -32,22 +33,16 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20),
-              TextField(
+              CustomTextField(
                 controller: emailController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Email',
-                  hintText: 'Enter your email',
-                ),
+                labelText: 'Email',
+                hintText: 'Enter your email',
               ),
               SizedBox(height: 20),
-              TextField(
+              CustomTextField(
                 controller: passwordController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Password',
-                  hintText: 'Enter your password',
-                ),
+                labelText: 'Password',
+                hintText: 'Enter your password',
                 obscureText: true,
               ),
               SizedBox(height: 20),

@@ -1,5 +1,5 @@
 import 'package:chatgpt_course/services/database_helper.dart';
-import 'package:chatgpt_course/services/user_model.dart';
+import 'package:chatgpt_course/models/user_model.dart';
 
 class AuthenticationService {
   final dbHelper = DatabaseHelper.instance;
@@ -8,12 +8,16 @@ class AuthenticationService {
     List<Map<String, dynamic>> result = await dbHelper.queryAllRows();
     for (var user in result) {
       if (user['email'] == email && user['password'] == password) {
-        return User(
-          id: user['_id'], // Use 'user['_id']' instead of 'user['id']'
+        User loggedInUser = User(
+          id: user['_id'],
           username: user['username'],
           email: user['email'],
           password: user['password'],
+          isLoggedIn: true,
         );
+        // Update the user in the database
+        await dbHelper.update(loggedInUser.toMap());
+        return loggedInUser;
       }
     }
     return null;
@@ -37,3 +41,4 @@ class AuthenticationService {
     return inserted == 1 ? null : 'Failed to register';
   }
 }
+

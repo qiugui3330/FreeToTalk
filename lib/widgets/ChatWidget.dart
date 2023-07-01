@@ -4,7 +4,7 @@ import 'package:chatgpt_course/services/assets_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
-import 'text_widget.dart';
+import 'TextWidget.dart';
 
 import 'package:flutter_tts/flutter_tts.dart';
 

@@ -1,10 +1,15 @@
-import 'package:chatgpt_course/screens/register_page.dart';
 import 'package:flutter/material.dart';
+import 'package:chatgpt_course/services/authentication_service.dart';
+import 'package:chatgpt_course/auth/login_page.dart';
 import 'package:provider/provider.dart';
+import 'package:chatgpt_course/widgets/CustomTextField.dart';
 
-import 'authentication_service.dart';
-import '../screens/login_page.dart';
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
+  @override
+  RegisterPageState createState() => RegisterPageState();
+}
 
 class RegisterPageState extends State<RegisterPage> {
   final TextEditingController _username = TextEditingController();
@@ -32,48 +37,30 @@ class RegisterPageState extends State<RegisterPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 40.0),
                 child: Column(
                   children: [
-                    TextFormField(
+                    CustomTextField(
                       controller: _username,
-                      decoration: InputDecoration(labelText: 'Username'),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter username';
-                        }
-                        return null;
-                      },
+                      labelText: 'Username',
+                      hintText: 'Please enter username',
                     ),
                     SizedBox(height: 20),
-                    TextFormField(
+                    CustomTextField(
                       controller: _email,
-                      decoration: InputDecoration(labelText: 'Email'),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter email';
-                        }
-                        return null;
-                      },
+                      labelText: 'Email',
+                      hintText: 'Please enter email',
                     ),
                     SizedBox(height: 20),
-                    TextFormField(
+                    CustomTextField(
                       controller: _password,
-                      decoration: InputDecoration(labelText: 'Password'),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter password';
-                        }
-                        return null;
-                      },
+                      labelText: 'Password',
+                      hintText: 'Please enter password',
+                      obscureText: true,
                     ),
                     SizedBox(height: 20),
-                    TextFormField(
+                    CustomTextField(
                       controller: _confirmPassword,
-                      decoration: InputDecoration(labelText: 'Confirm Password'),
-                      validator: (value) {
-                        if (value != _password.text) {
-                          return 'Passwords do not match';
-                        }
-                        return null;
-                      },
+                      labelText: 'Confirm Password',
+                      hintText: 'Please confirm password',
+                      obscureText: true,
                     ),
                     SizedBox(height: 40),
                     ElevatedButton(
@@ -93,8 +80,8 @@ class RegisterPageState extends State<RegisterPage> {
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       var authService = Provider.of<AuthenticationService>(context, listen: false);
-      var error = await authService.register(_username.text, _email.text, _password.text);
-      if (error == null) {
+      var success = await authService.register(_username.text, _email.text, _password.text);
+      if (success != null) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => LoginPage()),
@@ -104,7 +91,7 @@ class RegisterPageState extends State<RegisterPage> {
           context: context,
           builder: (ctx) => AlertDialog(
             title: Text('Registration Failed'),
-            content: Text(error),
+            content: Text('The email is already in use'),
             actions: <Widget>[
               TextButton(
                 child: Text('Okay'),
@@ -119,4 +106,3 @@ class RegisterPageState extends State<RegisterPage> {
     }
   }
 }
-

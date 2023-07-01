@@ -1,15 +1,10 @@
+import 'package:chatgpt_course/auth/register_page.dart';
 import 'package:flutter/material.dart';
-import 'package:chatgpt_course/services/authentication_service.dart';
-import 'package:chatgpt_course/screens/login_page.dart';
 import 'package:provider/provider.dart';
-import 'package:chatgpt_course/services/RegisterPageState.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+import '../services/authentication_service.dart';
+import 'login_page.dart';
 
-  @override
-  RegisterPageState createState() => RegisterPageState();
-}
 
 class RegisterPageState extends State<RegisterPage> {
   final TextEditingController _username = TextEditingController();
@@ -98,8 +93,8 @@ class RegisterPageState extends State<RegisterPage> {
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       var authService = Provider.of<AuthenticationService>(context, listen: false);
-      var success = await authService.register(_username.text, _email.text, _password.text);
-      if (success != null) {
+      var error = await authService.register(_username.text, _email.text, _password.text);
+      if (error == null) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => LoginPage()),
@@ -109,7 +104,7 @@ class RegisterPageState extends State<RegisterPage> {
           context: context,
           builder: (ctx) => AlertDialog(
             title: Text('Registration Failed'),
-            content: Text('The email is already in use'),
+            content: Text(error),
             actions: <Widget>[
               TextButton(
                 child: Text('Okay'),
@@ -124,3 +119,4 @@ class RegisterPageState extends State<RegisterPage> {
     }
   }
 }
+

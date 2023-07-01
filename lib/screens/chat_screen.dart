@@ -3,16 +3,18 @@ import 'dart:developer';
 import 'package:chatgpt_course/constants/constants.dart';
 import 'package:chatgpt_course/providers/chats_provider.dart';
 import 'package:chatgpt_course/services/services.dart';
-import 'package:chatgpt_course/services/user_model.dart';
-import 'package:chatgpt_course/widgets/chat_widget.dart';
+import 'package:chatgpt_course/models/user_model.dart';
+import 'package:chatgpt_course/widgets/ChatWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../auth/login_page.dart';
 import '../providers/models_provider.dart';
 import '../services/assets_manager.dart';
-import '../widgets/text_widget.dart';
+import '../services/database_helper.dart';
+import '../widgets/TextWidget.dart';
 
 class ChatScreen extends StatefulWidget {
   final User user;
@@ -156,6 +158,40 @@ class _ChatScreenState extends State<ChatScreen> {
               title: Text('To Be Determined'),
               onTap: () {
                 // Put your onTap function here
+              },
+            ),
+            ListTile(
+              title: Text('Logout'),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Logout'),
+                      content: Text('Are you sure you want to logout?'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: Text('No'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        TextButton(
+                          child: Text('Yes'),
+                          onPressed: () async {
+                            widget.user.isLoggedIn = false;
+                            await DatabaseHelper.instance.update(widget.user.toMap());
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: (context) => LoginPage(),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
             ),
           ],
