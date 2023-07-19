@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'services/authentication_service.dart';
 import 'constants/constants.dart';
 import 'providers/chats_provider.dart';
-import 'screens/chat_screen.dart';
 import 'auth/login_page.dart'; // 确保你的路径是正确的
 
 void main() {

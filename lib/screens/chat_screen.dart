@@ -1,10 +1,7 @@
 import 'dart:developer';
 
-import 'package:chatgpt_course/constants/constants.dart';
 import 'package:chatgpt_course/providers/chats_provider.dart';
-import 'package:chatgpt_course/services/services.dart';
 import 'package:chatgpt_course/models/user_model.dart';
-import 'package:chatgpt_course/widgets/ChatWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
@@ -14,7 +11,10 @@ import '../auth/login_page.dart';
 import '../providers/models_provider.dart';
 import '../services/assets_manager.dart';
 import '../services/database_helper.dart';
+import '../widgets/SendButton.dart';
 import '../widgets/TextWidget.dart';
+import '/widgets/ChatMessageList.dart';
+import '/widgets/MessageInputField.dart';
 
 class ChatScreen extends StatefulWidget {
   final User user;
@@ -201,16 +201,9 @@ class _ChatScreenState extends State<ChatScreen> {
         child: Column(
           children: [
             Flexible(
-              child: ListView.builder(
-                controller: _listScrollController,
-                itemCount: chatProvider.getChatList.length,
-                itemBuilder: (context, index) {
-                  return ChatWidget(
-                    msg: chatProvider.getChatList[index].msg,
-                    chatIndex: chatProvider.getChatList[index].chatIndex,
-                    shouldAnimate: chatProvider.getChatList.length - 1 == index,
-                  );
-                },
+              child: ChatMessageList(
+                chatList: chatProvider.getChatList,
+                listScrollController: _listScrollController,
               ),
             ),
             if (_isTyping)
@@ -223,94 +216,26 @@ class _ChatScreenState extends State<ChatScreen> {
             const SizedBox(
               height: 15,
             ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                border: Border.all(color: Colors.black87, width: 1.5),
-                borderRadius: BorderRadius.all(
-                  Radius.circular(20.0),
-                ),
-              ),
-              child: Material(
-                color: cardColor,
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Row(
-                    children: [
-                      Icon(LineAwesomeIcons.smiling_face),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: TextField(
-                          focusNode: focusNode,
-                          style: const TextStyle(color: Colors.black87),
-                          controller: textEditingController,
-                          onSubmitted: (value) async {
-                            await sendMessageFCT(
-                              modelsProvider: modelsProvider,
-                              chatProvider: chatProvider,
-                            );
-                          },
-                          decoration: const InputDecoration.collapsed(
-                            hintText: "Let's go!",
-                            hintStyle: TextStyle(
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 40,
-                      ),
-                      SizedBox(
-                        width: 50,
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(5),
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey,
-                            width: 1.5,
-                          ),
-                          borderRadius: BorderRadius.circular(30),
-                          color: Colors.white,
-                        ),
-                        child: Column(
-                          children: [
-                            Expanded(
-                              child: IconButton(
-                                onPressed: () async {
-                                  await sendMessageFCT(
-                                    modelsProvider: modelsProvider,
-                                    chatProvider: chatProvider,
-                                  );
-                                },
-                                icon: const Icon(
-                                  LineAwesomeIcons.telegram_plane,
-                                  color: Colors.orange,
-                                  size: 30,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
+            MessageInputField(
+              focusNode: focusNode,
+              textEditingController: textEditingController,
+              onSubmitted: (String value) {
+                sendMessageFCT(
+                  modelsProvider: modelsProvider,
+                  chatProvider: chatProvider,
+                );
+                scrollListToEND();
+              },
+              modelsProvider: modelsProvider,
+              chatProvider: chatProvider,
+              scrollListToEND: scrollListToEND,
+              sendMessageFCT: sendMessageFCT,
             ),
           ],
         ),
       ),
     );
   }
-
 
   void scrollListToEND() {
     _listScrollController.animateTo(
@@ -321,7 +246,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> sendMessageFCT(
       {required ModelsProvider modelsProvider,
-      required ChatProvider chatProvider}) async {
+        required ChatProvider chatProvider}) async {
     if (_isTyping) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

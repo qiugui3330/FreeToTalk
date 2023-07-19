@@ -11,7 +11,7 @@ class DatabaseHelper {
   static final columnUsername = 'username';
   static final columnEmail = 'email';
   static final columnPassword = 'password';
-  static final columnIsLoggedIn = 'isLoggedIn'; // 新增列
+  static final columnIsLoggedIn = 'isLoggedIn';
 
   // make this a singleton class
   DatabaseHelper._privateConstructor();
