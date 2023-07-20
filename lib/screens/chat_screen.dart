@@ -7,11 +7,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../auth/login_page.dart';
 import '../providers/models_provider.dart';
 import '../services/assets_manager.dart';
-import '../services/database_helper.dart';
-import '../widgets/SendButton.dart';
+import '../widgets/CustomDrawer.dart';
 import '../widgets/TextWidget.dart';
 import '/widgets/ChatMessageList.dart';
 import '/widgets/MessageInputField.dart';
@@ -122,81 +120,7 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         ],
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            UserAccountsDrawerHeader(
-              accountName: Text(
-                widget.user.username,
-                style: TextStyle(color: Colors.black),
-              ),
-              accountEmail: Text(
-                widget.user.email, // Change this line with your variable
-                style: TextStyle(color: Colors.black),
-              ),
-              currentAccountPicture: CircleAvatar(
-                backgroundImage: AssetImage(AssetsManager.openaiLogo), // Change this line with your variable
-              ),
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(244, 243, 246, 1),
-              ),
-            ),
-            ListTile(
-              title: Text('Option 1'),
-              onTap: () {
-                // Put your onTap function here
-              },
-            ),
-            ListTile(
-              title: Text('Option 2'),
-              onTap: () {
-                // Put your onTap function here
-              },
-            ),
-            ListTile(
-              title: Text('To Be Determined'),
-              onTap: () {
-                // Put your onTap function here
-              },
-            ),
-            ListTile(
-              title: Text('Logout'),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text('Logout'),
-                      content: Text('Are you sure you want to logout?'),
-                      actions: <Widget>[
-                        TextButton(
-                          child: Text('No'),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        TextButton(
-                          child: Text('Yes'),
-                          onPressed: () async {
-                            widget.user.isLoggedIn = false;
-                            await DatabaseHelper.instance.update(widget.user.toMap());
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (context) => LoginPage(),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: CustomDrawer(user: widget.user),
       body: SafeArea(
         child: Column(
           children: [
