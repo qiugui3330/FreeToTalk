@@ -18,14 +18,11 @@ class ApiService {
       Map jsonResponse = jsonDecode(response.body);
 
       if (jsonResponse['error'] != null) {
-        // print("jsonResponse['error'] ${jsonResponse['error']["message"]}");
         throw HttpException(jsonResponse['error']["message"]);
       }
-      // print("jsonResponse $jsonResponse");
       List temp = [];
       for (var value in jsonResponse["data"]) {
         temp.add(value);
-        // log("temp ${value["id"]}");
       }
       return ModelsModel.modelsFromSnapshot(temp);
     } catch (error) {
@@ -34,7 +31,6 @@ class ApiService {
     }
   }
 
-  // Send Message using ChatGPT API
   static Future<List<ChatModel>> sendMessageGPT(
       {required String message, required String modelId}) async {
     try {
@@ -58,15 +54,12 @@ class ApiService {
         ),
       );
 
-      // Map jsonResponse = jsonDecode(response.body);
       Map jsonResponse = json.decode(utf8.decode(response.bodyBytes));
       if (jsonResponse['error'] != null) {
-        // print("jsonResponse['error'] ${jsonResponse['error']["message"]}");
         throw HttpException(jsonResponse['error']["message"]);
       }
       List<ChatModel> chatList = [];
       if (jsonResponse["choices"].length > 0) {
-        // log("jsonResponse[choices]text ${jsonResponse["choices"][0]["text"]}");
         chatList = List.generate(
           jsonResponse["choices"].length,
               (index) => ChatModel(
@@ -82,7 +75,6 @@ class ApiService {
     }
   }
 
-  // Send Message fct
   static Future<List<ChatModel>> sendMessage(
       {required String message, required String modelId}) async {
     try {
@@ -102,16 +94,12 @@ class ApiService {
         ),
       );
 
-      // Map jsonResponse = jsonDecode(response.body);
-
       Map jsonResponse = json.decode(utf8.decode(response.bodyBytes));
       if (jsonResponse['error'] != null) {
-        // print("jsonResponse['error'] ${jsonResponse['error']["message"]}");
         throw HttpException(jsonResponse['error']["message"]);
       }
       List<ChatModel> chatList = [];
       if (jsonResponse["choices"].length > 0) {
-        // log("jsonResponse[choices]text ${jsonResponse["choices"][0]["text"]}");
         chatList = List.generate(
           jsonResponse["choices"].length,
               (index) => ChatModel(
@@ -126,4 +114,48 @@ class ApiService {
       rethrow;
     }
   }
+  static Future<String> getTranslation(
+      {required String word, required String fullSentence}) async {
+    try {
+      String prompt = "\"$word\" 在 \"$fullSentence\" 中是什么意思？请用中文回答，不需要给出整句的意思。";
+
+      // Print the question to the console
+      print('Question: $prompt');
+
+      var response = await http.post(
+        Uri.parse("$BASE_URL/completions"), // change the endpoint to /completions
+        headers: {
+          'Authorization': 'Bearer $API_KEY',
+          "Content-Type": "application/json"
+        },
+        body: jsonEncode(
+          {
+            "model": "text-davinci-002", // or your preferred model
+            "prompt": prompt,
+            "max_tokens": 60
+          },
+        ),
+      );
+
+      Map jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+      if (jsonResponse['error'] != null) {
+        throw HttpException(jsonResponse['error']["message"]);
+      }
+
+      if (jsonResponse["choices"].length > 0) {
+        String answer = jsonResponse["choices"][0]["text"].trim();
+
+        // Print the answer to the console
+        print('Answer: $answer');
+
+        return answer; // return the translation
+      }
+
+      return '';
+    } catch (error) {
+      log("error $error");
+      rethrow;
+    }
+  }
 }
+
