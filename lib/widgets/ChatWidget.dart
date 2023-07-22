@@ -1,3 +1,4 @@
+import 'package:chatgpt_course/widgets/WordSelectionDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:chatgpt_course/services/assets_manager.dart';
@@ -39,10 +40,6 @@ class _ChatWidgetState extends State<ChatWidget> {
   Future _playTtsAudio(String message) => _flutterTts.speak(message);
 
   void _showWordSelectionDialog(String msg) {
-    List<String> words = msg.split(RegExp(r'\b'));
-    words.removeWhere((word) => word.trim() == '' || word.contains('\n'));
-    var provider = Provider.of<ChatProvider>(context, listen: false);
-    provider.clearTranslation();
     showGeneralDialog(
       context: context,
       barrierLabel: "Label",
@@ -51,96 +48,13 @@ class _ChatWidgetState extends State<ChatWidget> {
       pageBuilder: (BuildContext context, Animation animation, Animation secondaryAnimation) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            return Material(
-              type: MaterialType.transparency,
-              child: Center(
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  height: MediaQuery.of(context).size.height / 3,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15.0),
-                    color: Colors.white,
-                  ),
-                  padding: EdgeInsets.all(10.0),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: Wrap(
-                            alignment: WrapAlignment.start,
-                            spacing: 0,
-                            runSpacing: 3.0,
-                            children: words.map((word) =>
-                                Container(
-                                  margin: EdgeInsets.symmetric(horizontal: 4.0),
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      primary: _selectedWord == word
-                                          ? Colors.blue
-                                          : Color.fromARGB(255, 244, 243, 246),
-                                      minimumSize: Size(30, 30),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
-                                      ),
-                                      padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        _selectedWord = word;
-                                      });
-                                      provider.getTranslationAndDisplay(_selectedWord!, msg);
-                                    },
-                                    child: Text(
-                                      word,
-                                      style: TextStyle(
-                                          color: Colors.black87,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 14),
-                                    ),
-                                  ),
-                                )
-                            ).toList(),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Container(
-                          margin: EdgeInsets.all(10.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: Colors.blueGrey,
-                          ),
-                          child: Consumer<ChatProvider>(
-                            builder: (context, chatProvider, _) => SingleChildScrollView(
-                              child: Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: Center(
-                                  child: Text(
-                                    chatProvider.getTranslation,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 16),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
+            return WordSelectionDialog(msg: msg, parentContext: context);
           },
         );
       },
     );
   }
+
 
   @override
   Widget build(BuildContext context) {

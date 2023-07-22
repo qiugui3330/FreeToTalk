@@ -33,15 +33,17 @@ class ChatProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getTranslationAndDisplay(String word, String fullSentence) async {
+  Future<void> getTranslationAndDisplay(String word,
+      String fullSentence) async {
     translation = '';
     notifyListeners();
-    translation = await ApiService.getTranslation(word: word, fullSentence: fullSentence);
+    translation =
+    await ApiService.getTranslation(word: word, fullSentence: fullSentence);
     notifyListeners();
   }
 
-  void clearTranslation() {
-    translation = '';
+  void setTranslation(String s) {
+    translation = s;
     notifyListeners();
   }
 }
