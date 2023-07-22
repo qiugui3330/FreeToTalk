@@ -130,9 +130,9 @@ class ApiService {
         },
         body: jsonEncode(
           {
-            "model": "text-davinci-002", // or your preferred model
+            "model": "text-davinci-003", // or your preferred model
             "prompt": prompt,
-            "max_tokens": 60
+            "max_tokens": 600
           },
         ),
       );

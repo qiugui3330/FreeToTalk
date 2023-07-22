@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
+
 import '../providers/chats_provider.dart';
 
 class WordSelectionDialog extends StatefulWidget {
@@ -19,6 +20,7 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
   List<int> _selectedWords = [];
   int? _multiSelectStartIndex;
   late ChatProvider provider;
+  Timer? _timer;
 
   @override
   void initState() {
@@ -38,9 +40,10 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
     provider.setTranslation('Waiting...');
   }
 
-  Future<void> _selectWords(List<String> words) async {
+  void _selectWords(List<String> words) {
     _selectedWords.sort();
 
+    // Create selectedStrings by adding words and '...' or ' ' appropriately
     List<String> selectedStrings = [];
     for (int i = 0; i < _selectedWords.length; i++) {
       selectedStrings.add(words[_selectedWords[i]]);
@@ -50,16 +53,32 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
     }
     String translationQuery = selectedStrings.join('');
 
-    await provider.getTranslationAndDisplay(translationQuery, widget.msg);
+    // Create a copy of _selectedWords to not modify the original
+    List<int> tempSelectedWords = List.from(_selectedWords);
+
+    while (tempSelectedWords.first > 0 &&
+        !words[tempSelectedWords.first - 1].contains(RegExp(r'[.,;?!。，；？！]'))) {
+      tempSelectedWords.insert(0, tempSelectedWords.first - 1);
+    }
+
+    while (tempSelectedWords.last < words.length - 1 &&
+        !words[tempSelectedWords.last + 1].contains(RegExp(r'[.,;?!。，；？！]'))) {
+      tempSelectedWords.add(tempSelectedWords.last + 1);
+    }
+
+    String fullQuery = tempSelectedWords.map((index) => words[index]).join(' ');
+
+    provider.getTranslationAndDisplay(translationQuery, fullQuery);
   }
 
   void _toggleWordSelection(int index, List<String> words) {
     setState(() {
       if (_multiSelectStartIndex != null) {
+        // In multi-select mode
         int start = min(_multiSelectStartIndex!, index);
         int end = max(_multiSelectStartIndex!, index);
         _selectedWords = List<int>.generate(end - start + 1, (i) => start + i);
-        _multiSelectStartIndex = null;
+        _multiSelectStartIndex = null; // Exit multi-select mode
       } else {
         if (_selectedWords.contains(index)) {
           _selectedWords.remove(index);
@@ -69,7 +88,15 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
       }
     });
     provider.setTranslation('Waiting...');
-    _selectWords(words);
+    _timer?.cancel();
+    _timer = Timer(Duration(seconds: 2), () {
+      if (_selectedWords.isNotEmpty) {
+        _selectWords(words);
+      } else {
+        provider
+            .setTranslation(''); // No words selected, clear translation area
+      }
+    });
   }
 
   @override
@@ -98,34 +125,39 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                     alignment: WrapAlignment.start,
                     spacing: 0,
                     runSpacing: 3.0,
-                    children: words.asMap().entries.map((entry) =>
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: 4.0),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: _selectedWords.contains(entry.key)
-                                  ? _multiSelectStartIndex != null && _selectedWords.first == entry.key
-                                  ? Colors.green
-                                  : Colors.blue
-                                  : Color.fromARGB(255, 244, 243, 246),
-                              minimumSize: Size(30, 30),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
+                    children: words
+                        .asMap()
+                        .entries
+                        .map((entry) => Container(
+                              margin: EdgeInsets.symmetric(horizontal: 4.0),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: _selectedWords.contains(entry.key)
+                                      ? _multiSelectStartIndex != null &&
+                                              _selectedWords.first == entry.key
+                                          ? Colors.green
+                                          : Colors.blue
+                                      : Color.fromARGB(255, 244, 243, 246),
+                                  minimumSize: Size(30, 30),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 8.0, vertical: 8.0),
+                                ),
+                                onPressed: () =>
+                                    _toggleWordSelection(entry.key, words),
+                                onLongPress: () => _onLongPress(entry.key),
+                                child: Text(
+                                  entry.value,
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14),
+                                ),
                               ),
-                              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                            ),
-                            onPressed: () => _toggleWordSelection(entry.key, words),
-                            onLongPress: () => _onLongPress(entry.key),
-                            child: Text(
-                              entry.value,
-                              style: TextStyle(
-                                  color: Colors.black87,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 14),
-                            ),
-                          ),
-                        )
-                    ).toList(),
+                            ))
+                        .toList(),
                   ),
                 ),
               ),
@@ -138,7 +170,8 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                     color: Colors.blueGrey,
                   ),
                   child: Consumer<ChatProvider>(
-                    builder: (context, chatProvider, _) => SingleChildScrollView(
+                    builder: (context, chatProvider, _) =>
+                        SingleChildScrollView(
                       child: Padding(
                         padding: const EdgeInsets.all(15.0),
                         child: Center(
