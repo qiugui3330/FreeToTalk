@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:chatgpt_course/services/TtsService.dart';
 import 'dart:math';
 
 import '../providers/chats_provider.dart';
@@ -20,6 +21,7 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
   List<int> _selectedWords = [];
   int? _multiSelectStartIndex;
   late ChatProvider provider;
+  late TtsService _ttsService;
   Timer? _timer;
   String? _lastTranslationQuery;
   String? _lastFullQuery;
@@ -27,6 +29,7 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
   @override
   void initState() {
     super.initState();
+    _ttsService = TtsService();
     provider = Provider.of<ChatProvider>(context, listen: false);
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       provider.setTranslation('');
@@ -45,7 +48,6 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
   void _selectWords(List<String> words) {
     _selectedWords.sort();
 
-    // Create selectedStrings by adding words and '...' or ' ' appropriately
     List<String> selectedStrings = [];
     for (int i = 0; i < _selectedWords.length; i++) {
       selectedStrings.add(words[_selectedWords[i]]);
@@ -56,7 +58,6 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
 
     String translationQuery = selectedStrings.join('');
 
-    // Create a copy of _selectedWords to not modify the original
     List<int> tempSelectedWords = List.from(_selectedWords);
 
     while (tempSelectedWords.first > 0 &&
@@ -71,7 +72,6 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
 
     String fullQuery = tempSelectedWords.map((index) => words[index]).join(' ');
 
-    // Store the queries for later use
     _lastTranslationQuery = translationQuery;
     _lastFullQuery = fullQuery;
 
@@ -81,11 +81,10 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
   void _toggleWordSelection(int index, List<String> words) {
     setState(() {
       if (_multiSelectStartIndex != null) {
-        // In multi-select mode
         int start = min(_multiSelectStartIndex!, index);
         int end = max(_multiSelectStartIndex!, index);
         _selectedWords = List<int>.generate(end - start + 1, (i) => start + i);
-        _multiSelectStartIndex = null; // Exit multi-select mode
+        _multiSelectStartIndex = null;
       } else {
         if (_selectedWords.contains(index)) {
           _selectedWords.remove(index);
@@ -100,8 +99,7 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
       if (_selectedWords.isNotEmpty) {
         _selectWords(words);
       } else {
-        provider
-            .setTranslation(''); // No words selected, clear translation area
+        provider.setTranslation('');
       }
     });
   }
@@ -109,11 +107,9 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
   void _toggleSelectAllWords(List<String> words) {
     setState(() {
       if (_selectedWords.length == words.length) {
-        // All words are selected, clear selection
         _selectedWords = [];
         provider.setTranslation('');
       } else {
-        // Not all words are selected, select all
         _selectedWords = List<int>.generate(words.length, (i) => i);
         provider.setTranslation('Waiting...');
         _timer?.cancel();
@@ -221,23 +217,26 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                         flex: 1,
                         child: Padding(
                           padding: const EdgeInsets.all(0.0),
-                          child: Padding(  //在这里添加一个新的Padding小部件
-                            padding: EdgeInsets.only(bottom: 2.0),  //增加底部边距
+                          child: Padding(
+                            padding: EdgeInsets.only(bottom: 2.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: <Widget>[
                                 FloatingActionButton(
-                                  mini: true,  //使图标变小
-                                  backgroundColor: Colors.transparent, //去掉背景
-                                  elevation: 0, //去掉阴影
-                                  onPressed: null, //暂时没有实现的功能
-                                  child: Icon(Icons.book, size: 20), //可以设置图标大小
+                                  mini: true,
+                                  backgroundColor: Colors.transparent,
+                                  elevation: 0,
+                                  onPressed: null,
+                                  child: Icon(Icons.book, size: 20),
                                 ),
                                 FloatingActionButton(
                                   mini: true,
                                   backgroundColor: Colors.transparent,
                                   elevation: 0,
-                                  onPressed: null, //暂时没有实现的功能
+                                  onPressed: () {
+                                    String wordsToSpeak = _selectedWords.map((index) => words[index]).join(' ');
+                                    _ttsService.speak(wordsToSpeak);
+                                  },
                                   child: Icon(Icons.play_arrow, size: 20),
                                 ),
                                 FloatingActionButton(

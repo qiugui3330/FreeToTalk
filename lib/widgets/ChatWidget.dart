@@ -1,10 +1,7 @@
 import 'package:chatgpt_course/widgets/WordSelectionDialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:chatgpt_course/services/assets_manager.dart';
-import 'package:provider/provider.dart';
-
-import '../providers/chats_provider.dart';
+import 'package:chatgpt_course/services/TtsService.dart'; // import TtsService
 import 'TextWidget.dart';
 
 class ChatWidget extends StatefulWidget {
@@ -25,19 +22,16 @@ class ChatWidget extends StatefulWidget {
 
 class _ChatWidgetState extends State<ChatWidget> {
   bool _isTextVisible = false;
-  late final FlutterTts _flutterTts;
+  final TtsService _ttsService = TtsService(); // Move initialization here
   String? _selectedWord;
 
   @override
   void initState() {
     super.initState();
-    _flutterTts = FlutterTts();
     if (widget.chatIndex != 0) {
-      _playTtsAudio(widget.msg);
+      _ttsService.speak(widget.msg); // use TtsService's speak method
     }
   }
-
-  Future _playTtsAudio(String message) => _flutterTts.speak(message);
 
   void _showWordSelectionDialog(String msg) {
     showGeneralDialog(
@@ -54,7 +48,6 @@ class _ChatWidgetState extends State<ChatWidget> {
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +111,7 @@ class _ChatWidgetState extends State<ChatWidget> {
               IconButton(
                 icon: Icon(Icons.play_arrow),
                 onPressed: () async {
-                  await _playTtsAudio(widget.msg);
+                  await _ttsService.speak(widget.msg); // use TtsService's speak method
                 },
               )
             else
@@ -144,7 +137,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                     IconButton(
                       icon: Icon(Icons.play_arrow),
                       onPressed: () async {
-                        await _playTtsAudio(widget.msg);
+                        await _ttsService.speak(widget.msg); // use TtsService's speak method
                       },
                     ),
                   ],
