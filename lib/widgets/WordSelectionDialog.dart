@@ -21,6 +21,8 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
   int? _multiSelectStartIndex;
   late ChatProvider provider;
   Timer? _timer;
+  String? _lastTranslationQuery;
+  String? _lastFullQuery;
 
   @override
   void initState() {
@@ -51,6 +53,7 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
         selectedStrings.add(_selectedWords[i + 1] - _selectedWords[i] == 1 ? ' ' : '...');
       }
     }
+
     String translationQuery = selectedStrings.join('');
 
     // Create a copy of _selectedWords to not modify the original
@@ -67,6 +70,10 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
     }
 
     String fullQuery = tempSelectedWords.map((index) => words[index]).join(' ');
+
+    // Store the queries for later use
+    _lastTranslationQuery = translationQuery;
+    _lastFullQuery = fullQuery;
 
     provider.getTranslationAndDisplay(translationQuery, fullQuery);
   }
@@ -99,9 +106,28 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
     });
   }
 
+  void _toggleSelectAllWords(List<String> words) {
+    setState(() {
+      if (_selectedWords.length == words.length) {
+        // All words are selected, clear selection
+        _selectedWords = [];
+        provider.setTranslation('');
+      } else {
+        // Not all words are selected, select all
+        _selectedWords = List<int>.generate(words.length, (i) => i);
+        provider.setTranslation('Waiting...');
+        _timer?.cancel();
+        _timer = Timer(Duration(seconds: 2), () {
+          _selectWords(words);
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<String> words = widget.msg.split(RegExp(r'\b'));
+    RegExp exp = RegExp(r"\b\w+\'\w+\b|\w+|[^\w\s\'\n]|\s+");
+    List<String> words = exp.allMatches(widget.msg).map((m) => m.group(0)!).toList();
     words.removeWhere((word) => word.trim() == '' || word.contains('\n'));
 
     return Material(
@@ -109,7 +135,7 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
       child: Center(
         child: Container(
           width: MediaQuery.of(widget.parentContext).size.width * 0.9,
-          height: MediaQuery.of(widget.parentContext).size.height / 3,
+          height: MediaQuery.of(widget.parentContext).size.height / 2.3,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
             color: Colors.white,
@@ -129,34 +155,34 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                         .asMap()
                         .entries
                         .map((entry) => Container(
-                              margin: EdgeInsets.symmetric(horizontal: 4.0),
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  primary: _selectedWords.contains(entry.key)
-                                      ? _multiSelectStartIndex != null &&
-                                              _selectedWords.first == entry.key
-                                          ? Colors.green
-                                          : Colors.blue
-                                      : Color.fromARGB(255, 244, 243, 246),
-                                  minimumSize: Size(30, 30),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 8.0, vertical: 8.0),
-                                ),
-                                onPressed: () =>
-                                    _toggleWordSelection(entry.key, words),
-                                onLongPress: () => _onLongPress(entry.key),
-                                child: Text(
-                                  entry.value,
-                                  style: TextStyle(
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 14),
-                                ),
-                              ),
-                            ))
+                      margin: EdgeInsets.symmetric(horizontal: 4.0),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: _selectedWords.contains(entry.key)
+                              ? _multiSelectStartIndex != null &&
+                              _selectedWords.first == entry.key
+                              ? Colors.green
+                              : Colors.blue
+                              : Color.fromARGB(255, 244, 243, 246),
+                          minimumSize: Size(30, 30),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8.0, vertical: 8.0),
+                        ),
+                        onPressed: () =>
+                            _toggleWordSelection(entry.key, words),
+                        onLongPress: () => _onLongPress(entry.key),
+                        child: Text(
+                          entry.value,
+                          style: TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14),
+                        ),
+                      ),
+                    ))
                         .toList(),
                   ),
                 ),
@@ -169,25 +195,79 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                     borderRadius: BorderRadius.circular(10.0),
                     color: Colors.blueGrey,
                   ),
-                  child: Consumer<ChatProvider>(
-                    builder: (context, chatProvider, _) =>
-                        SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Center(
-                          child: Text(
-                            chatProvider.getTranslation,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 16),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: Consumer<ChatProvider>(
+                          builder: (context, chatProvider, _) =>
+                              SingleChildScrollView(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: Center(
+                                    child: Text(
+                                      chatProvider.getTranslation,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 16),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.all(0.0),
+                          child: Padding(  //在这里添加一个新的Padding小部件
+                            padding: EdgeInsets.only(bottom: 2.0),  //增加底部边距
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: <Widget>[
+                                FloatingActionButton(
+                                  mini: true,  //使图标变小
+                                  backgroundColor: Colors.transparent, //去掉背景
+                                  elevation: 0, //去掉阴影
+                                  onPressed: null, //暂时没有实现的功能
+                                  child: Icon(Icons.book, size: 20), //可以设置图标大小
+                                ),
+                                FloatingActionButton(
+                                  mini: true,
+                                  backgroundColor: Colors.transparent,
+                                  elevation: 0,
+                                  onPressed: null, //暂时没有实现的功能
+                                  child: Icon(Icons.play_arrow, size: 20),
+                                ),
+                                FloatingActionButton(
+                                  mini: true,
+                                  backgroundColor: Colors.transparent,
+                                  elevation: 0,
+                                  onPressed: () => _toggleSelectAllWords(words),
+                                  child: Icon(Icons.select_all, size: 20),
+                                ),
+                                FloatingActionButton(
+                                  mini: true,
+                                  backgroundColor: Colors.transparent,
+                                  elevation: 0,
+                                  onPressed: () {
+                                    if (_lastTranslationQuery != null && _lastFullQuery != null) {
+                                      provider.getTranslationAndDisplay(_lastTranslationQuery!, _lastFullQuery!);
+                                    }
+                                  },
+                                  child: Icon(Icons.refresh, size: 20),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
-              ),
+              )
+
             ],
           ),
         ),

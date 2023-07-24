@@ -117,7 +117,7 @@ class ApiService {
   static Future<String> getTranslation(
       {required String word, required String fullSentence}) async {
     try {
-      String prompt = "\"$word\" 在 \"$fullSentence\" 中是什么意思？请用中文回答，不需要给出整句的意思。";
+      String prompt = "\"$word\" 在 \"$fullSentence\" 中是什么意思？请用中文回答，只给出 \"$word\" 在这句中表达的意思。";
 
       // Print the question to the console
       print('Question: $prompt');
