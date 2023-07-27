@@ -5,6 +5,8 @@ import 'package:chatgpt_course/screens/chat_screen.dart';
 import 'package:chatgpt_course/auth/register_page.dart';
 import 'package:chatgpt_course/widgets/CustomTextField.dart';
 
+import '../database/user_model.dart';
+
 // Defining a stateless widget for the login page
 class LoginPage extends StatelessWidget {
   // Initializing controllers for email and password text fields
@@ -66,25 +68,47 @@ class LoginPage extends StatelessWidget {
                 ),
                 child: Text('Login', style: TextStyle(fontSize: 20)),
                 onPressed: () async {
-                  // Attempting to login the user
-                  var user = await authService.login(
-                      emailController.text, passwordController.text);
-                  if (user != null) {
-                    // If login is successful, navigate to the chat screen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ChatScreen(user: user),
-                      ),
-                    );
-                  } else {
-                    // If login fails, show an error message
+                  try {
+                    // Attempting to login the user
+                    User? user = await authService.login(
+                        emailController.text, passwordController.text);
+
+                    if (user != null) {
+                      // If login is successful, navigate to the chat screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChatScreen(user: user),
+                        ),
+                      );
+                    } else {
+                      // If login fails, show an error message
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text("Error"),
+                            content: Text('Invalid credentials'),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text("OK"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
+                  } catch (e) {
+                    // If an exception is thrown, show an error message
                     showDialog(
                       context: context,
                       builder: (context) {
                         return AlertDialog(
                           title: Text("Error"),
-                          content: Text("Invalid credentials"),
+                          content: Text(e.toString()),
                           actions: <Widget>[
                             TextButton(
                               child: Text("OK"),

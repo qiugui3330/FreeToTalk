@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:chatgpt_course/services/TtsService.dart';
 import 'dart:math';
 
+import '../database/database_service.dart';
+import '../database/word_model.dart';
 import '../providers/chats_provider.dart';
 
 class WordSelectionDialog extends StatefulWidget {
@@ -226,9 +228,40 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                                   mini: true,
                                   backgroundColor: Colors.transparent,
                                   elevation: 0,
-                                  onPressed: null,
-                                  child: Icon(Icons.book, size: 20),
+                                  onPressed: () async {
+                                    if (provider.getTranslation == 'Waiting...') {
+                                      // If translation is not ready, display a message and return
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text('Please wait for the translation'),
+                                        ),
+                                      );
+                                      return;
+                                    }
+
+                                    if (_lastTranslationQuery != null && _lastFullQuery != null) {
+                                      Word word = Word(
+                                        word: _lastTranslationQuery!,
+                                        translation: provider.getTranslation, // This should get the translation from your provider
+                                        addDate: DateTime.now(),
+                                        originalSentence: _lastFullQuery!,
+                                      );
+
+                                      try {
+                                        await DatabaseService.instance.insertWord(word.toMap()); // Use the toMap() method to convert Word to Map
+                                      } catch (e) {
+                                        // If no valid wordbookId is found, display a message
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text(e.toString()),
+                                          ),
+                                        );
+                                      }
+                                    }
+                                  },
+                                  child: Icon(Icons.add, size: 20),
                                 ),
+
                                 FloatingActionButton(
                                   mini: true,
                                   backgroundColor: Colors.transparent,

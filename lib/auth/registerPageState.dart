@@ -2,28 +2,23 @@ import 'package:chatgpt_course/auth/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/authentication_service.dart';
+import '../widgets/CustomTextField.dart';
 import 'login_page.dart';
 
-// Defining a stateful widget for the registration page
 class RegisterPageState extends State<RegisterPage> {
-  // Initializing controllers for username, email, password, and confirm password text fields
   final TextEditingController _username = TextEditingController();
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
   final TextEditingController _confirmPassword = TextEditingController();
 
-  // Initializing a global key for the form
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  // Building the widget
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Defining the app bar
       appBar: AppBar(
-        title: Text("Register"),
+        title: Text('Register'),
       ),
-      // Defining the body of the scaffold
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -36,43 +31,57 @@ class RegisterPageState extends State<RegisterPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 40.0),
                 child: Column(
                   children: [
-                    // Creating text fields for username, email, password, and confirm password with validation
-                    TextFormField(
+                    CustomTextField(
                       controller: _username,
-                      decoration: InputDecoration(labelText: 'Username'),
+                      labelText: 'Username',
+                      hintText: 'Please enter username',
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter username';
                         }
+                        if (value.length < 5 || value.length > 15) {
+                          return 'Username should be between 5 and 15 characters';
+                        }
                         return null;
                       },
                     ),
                     SizedBox(height: 20),
-                    TextFormField(
+                    CustomTextField(
                       controller: _email,
-                      decoration: InputDecoration(labelText: 'Email'),
+                      labelText: 'Email',
+                      hintText: 'Please enter email',
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter email';
                         }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: 20),
-                    TextFormField(
-                      controller: _password,
-                      decoration: InputDecoration(labelText: 'Password'),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter password';
+                        if (!value.contains(RegExp(r'^[a-zA-Z0-9.a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}'))) {
+                          return 'Please enter a valid email';
                         }
                         return null;
                       },
                     ),
                     SizedBox(height: 20),
-                    TextFormField(
+                    CustomTextField(
+                      controller: _password,
+                      labelText: 'Password',
+                      hintText: 'Please enter password',
+                      obscureText: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter password';
+                        }
+                        if (value.length < 8 || !value.contains(RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'))) {
+                          return 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 20),
+                    CustomTextField(
                       controller: _confirmPassword,
-                      decoration: InputDecoration(labelText: 'Confirm Password'),
+                      labelText: 'Confirm Password',
+                      hintText: 'Please confirm password',
+                      obscureText: true,
                       validator: (value) {
                         if (value != _password.text) {
                           return 'Passwords do not match';
@@ -81,10 +90,9 @@ class RegisterPageState extends State<RegisterPage> {
                       },
                     ),
                     SizedBox(height: 40),
-                    // Creating a register button
                     ElevatedButton(
                       onPressed: _submitForm,
-                      child: Text("Register"),
+                      child: Text('Register'),
                     ),
                   ],
                 ),
@@ -96,40 +104,36 @@ class RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  // Defining the function to submit the form
   void _submitForm() async {
-    // Validating the form
     if (_formKey.currentState!.validate()) {
-      // Attempting to register the user
       var authService = Provider.of<AuthenticationService>(context, listen: false);
-      var error = await authService.register(_username.text, _email.text, _password.text);
-      if (error == null) {
-        // If registration is successful, navigate to the login page
+      var registerResult = await authService.register(_username.text, _email.text, _password.text);
+      if (registerResult == null) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => LoginPage()),
         );
       } else {
-        // If registration fails, show an error message
-        showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: Text('Registration Failed'),
-
-
-            content: Text(error),
-            actions: <Widget>[
-              TextButton(
-                child: Text('Okay'),
-                onPressed: () {
-                  Navigator.of(ctx).pop();
-                },
-              ),
-            ],
-          ),
-        );
+        _showErrorDialog(registerResult);
       }
     }
   }
-}
 
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Error'),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            child: Text('Okay'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}

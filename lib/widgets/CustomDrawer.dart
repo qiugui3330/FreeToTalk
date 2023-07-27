@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import '../database/database_service.dart';
 import '../services/assets_manager.dart';
 import '../auth/login_page.dart';
-import '../models/user_model.dart';
-import '../services/database_helper.dart';
+import '../database/user_model.dart';
 
 class CustomDrawer extends StatelessWidget {
   final User user;
@@ -69,7 +69,7 @@ class CustomDrawer extends StatelessWidget {
                         child: Text('Yes'),
                         onPressed: () async {
                           user.isLoggedIn = false;
-                          await DatabaseHelper.instance.update(user.toMap());
+                          await DatabaseService.instance.updateUser(user.toMap());
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                               builder: (context) => LoginPage(),

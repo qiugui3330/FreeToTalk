@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:chatgpt_course/providers/chats_provider.dart';
-import 'package:chatgpt_course/models/user_model.dart';
+import 'package:chatgpt_course/database/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
