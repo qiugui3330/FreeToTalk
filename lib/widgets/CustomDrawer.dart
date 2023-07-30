@@ -69,7 +69,8 @@ class CustomDrawer extends StatelessWidget {
                         child: Text('Yes'),
                         onPressed: () async {
                           user.isLoggedIn = false;
-                          await DatabaseService.instance.updateUser(user.toMap());
+                          int id = await DatabaseService.instance.getCurrentUserId();
+                          await DatabaseService.instance.updateUser(user, id);
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                               builder: (context) => LoginPage(),
@@ -77,6 +78,7 @@ class CustomDrawer extends StatelessWidget {
                           );
                         },
                       ),
+
                     ],
                   );
                 },

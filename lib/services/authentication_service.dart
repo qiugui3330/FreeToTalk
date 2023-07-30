@@ -17,11 +17,8 @@ class AuthenticationService {
             isLoggedIn: user['isLoggedIn'] == 1,
           );
 
-          Map<String, dynamic> updateRow = {
-            DatabaseService.userIdColumn: user[DatabaseService.userIdColumn],
-            DatabaseService.isLoggedInColumn: 1,
-          };
-          await dbHelper.updateUser(updateRow);
+          currentUser.isLoggedIn = true;
+          await dbHelper.updateUser(currentUser, user[DatabaseService.userIdColumn]);
 
           return currentUser;
         } else {
@@ -31,8 +28,6 @@ class AuthenticationService {
     }
     throw Exception('Email not found');
   }
-
-
 
   Future<String?> register(String username, String email, String password) async {
     List<Map<String, dynamic>> result = await dbHelper.queryAllUsers();

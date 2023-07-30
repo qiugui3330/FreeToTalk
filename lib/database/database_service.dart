@@ -109,10 +109,9 @@ class DatabaseService {
 
   // The rest of your original methods go here, removing any logic related to manually incrementing the id value
 
-  Future<int> updateUser(Map<String, dynamic> row) async {
+  Future<int> updateUser(User user, int id) async {
     Database db = await instance.database;
-    int id = row[userIdColumn];
-    return await db.update(userTable, row, where: '$userIdColumn = ?', whereArgs: [id]);
+    return await db.update(userTable, user.toMap(), where: '$userIdColumn = ?', whereArgs: [id]);
   }
 
   Future<List<Map<String, dynamic>>> queryAllUsers() async {
