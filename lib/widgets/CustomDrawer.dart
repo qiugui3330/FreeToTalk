@@ -32,19 +32,25 @@ class CustomDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text('Option 1'),
+            title: Text('Free Talk'),
             onTap: () {
               // Put your onTap function here
             },
           ),
           ListTile(
-            title: Text('Option 2'),
+            title: Text('Roleplay Dialogue'),
             onTap: () {
               // Put your onTap function here
             },
           ),
           ListTile(
-            title: Text('To Be Determined'),
+            title: Text('Review Prompts'),
+            onTap: () {
+              // Put your onTap function here
+            },
+          ),
+          ListTile(
+            title: Text('Word book'),
             onTap: () {
               // Put your onTap function here
             },
@@ -71,12 +77,13 @@ class CustomDrawer extends StatelessWidget {
                           user.isLoggedIn = false;
                           int id = await DatabaseService.instance.getCurrentUserId();
                           await DatabaseService.instance.updateUser(user, id);
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) => LoginPage(),
-                            ),
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => LoginPage()),
+                                (Route<dynamic> route) => false,
                           );
                         },
+
                       ),
 
                     ],

@@ -4,6 +4,22 @@ import '../database/user_model.dart';
 class AuthenticationService {
   final dbHelper = DatabaseService.instance;
 
+  Future<User?> getLoggedInUser() async {
+    List<Map<String, dynamic>> users = await dbHelper.queryAllUsers();
+    for (var user in users) {
+      if (user['isLoggedIn'] == 1) {
+        return User(
+          username: user['username'],
+          email: user['email'],
+          password: user['password'],
+          isLoggedIn: true,
+        );
+      }
+    }
+    return null;
+  }
+
+
   Future<User?> login(String email, String password) async {
     List<Map<String, dynamic>> result = await dbHelper.queryAllUsers();
 

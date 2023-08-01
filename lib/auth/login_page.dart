@@ -75,8 +75,7 @@ class LoginPage extends StatelessWidget {
 
                     if (user != null) {
                       // If login is successful, navigate to the chat screen
-                      Navigator.push(
-                        context,
+                      Navigator.of(context).pushReplacement(    // Change push to pushReplacement
                         MaterialPageRoute(
                           builder: (context) => ChatScreen(user: user),
                         ),
