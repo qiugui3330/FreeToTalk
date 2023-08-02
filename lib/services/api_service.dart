@@ -8,6 +8,8 @@ import 'package:chatgpt_course/models/models_model.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
+  static const String MODEL_ID = "gpt-3.5-turbo";
+
   static Future<List<ModelsModel>> getModels() async {
     try {
       var response = await http.get(
@@ -31,10 +33,10 @@ class ApiService {
     }
   }
 
-  static Future<List<ChatModel>> sendMessageGPT(
-      {required String message, required String modelId}) async {
+  static Future<List<ChatModel>> chatWithModel(
+      {required String message}) async {
     try {
-      log("modelId $modelId");
+      log("Sending message: $message");
       var response = await http.post(
         Uri.parse("$BASE_URL/chat/completions"),
         headers: {
@@ -43,7 +45,7 @@ class ApiService {
         },
         body: jsonEncode(
           {
-            "model": modelId,
+            "model": MODEL_ID,
             "messages": [
               {
                 "role": "user",
@@ -62,10 +64,11 @@ class ApiService {
       if (jsonResponse["choices"].length > 0) {
         chatList = List.generate(
           jsonResponse["choices"].length,
-              (index) => ChatModel(
-            msg: jsonResponse["choices"][index]["message"]["content"],
-            chatIndex: 1,
-          ),
+              (index) {
+            String msg = jsonResponse["choices"][index]["message"]["content"];
+            log("Received message: $msg");
+            return ChatModel(msg: msg, chatIndex: 1);
+          },
         );
       }
       return chatList;
@@ -75,10 +78,10 @@ class ApiService {
     }
   }
 
-  static Future<List<ChatModel>> sendMessage(
+  static Future<List<ChatModel>> generateCompletion(
       {required String message, required String modelId}) async {
     try {
-      log("modelId $modelId");
+      log("Sending message: $message");
       var response = await http.post(
         Uri.parse("$BASE_URL/completions"),
         headers: {
@@ -87,7 +90,7 @@ class ApiService {
         },
         body: jsonEncode(
           {
-            "model": modelId,
+            "model": MODEL_ID,
             "prompt": message,
             "max_tokens": 300,
           },
@@ -102,10 +105,11 @@ class ApiService {
       if (jsonResponse["choices"].length > 0) {
         chatList = List.generate(
           jsonResponse["choices"].length,
-              (index) => ChatModel(
-            msg: jsonResponse["choices"][index]["text"],
-            chatIndex: 1,
-          ),
+              (index) {
+            String msg = jsonResponse["choices"][index]["text"];
+            log("Received message: $msg");
+            return ChatModel(msg: msg, chatIndex: 1);
+          },
         );
       }
       return chatList;
@@ -114,6 +118,7 @@ class ApiService {
       rethrow;
     }
   }
+
   static Future<String> getTranslation(
       {required String word, required String fullSentence}) async {
     try {

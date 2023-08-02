@@ -1,13 +1,138 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../database/conversation_model.dart';
 import '../database/database_service.dart';
+import '../providers/chats_provider.dart';
 import '../services/assets_manager.dart';
 import '../auth/login_page.dart';
 import '../database/user_model.dart';
+import 'CustomTextField.dart';
 
 class CustomDrawer extends StatelessWidget {
   final User user;
 
   const CustomDrawer({Key? key, required this.user}) : super(key: key);
+
+  Future<void> createConversation(BuildContext context, int type, List<String>? parameters) async {
+    var conversation = Conversation(
+      userId: await DatabaseService.instance.getCurrentUserId(),
+      type: type,
+      date: DateTime.now().toString(),
+      parameters: parameters,
+    );
+    await DatabaseService.instance.insertConversation(conversation);
+  }
+
+  Future<Map<String, String>?> showRoleplayDialogueForm(BuildContext context) {
+    TextEditingController userRoleController = TextEditingController();
+    TextEditingController aiRoleController = TextEditingController();
+    TextEditingController locationController = TextEditingController();
+    TextEditingController timeController = TextEditingController();
+    TextEditingController otherInfoController = TextEditingController();
+
+    return showDialog<Map<String, String>>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.grey[200],
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Text(
+            'Create a New Roleplay Dialogue',
+            style: TextStyle(
+              fontSize: 24.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: 20),
+                  CustomTextField(
+                    controller: userRoleController,
+                    labelText: 'User Role',
+                    hintText: 'Please enter user role',
+                  ),
+                  SizedBox(height: 20),
+                  CustomTextField(
+                    controller: aiRoleController,
+                    labelText: 'AI Role',
+                    hintText: 'Please enter AI role',
+                  ),
+                  SizedBox(height: 20),
+                  CustomTextField(
+                    controller: locationController,
+                    labelText: 'Location of Dialogue',
+                    hintText: 'Please enter location of dialogue',
+                  ),
+                  SizedBox(height: 20),
+                  CustomTextField(
+                    controller: timeController,
+                    labelText: 'Time of Dialogue',
+                    hintText: 'Please enter time of dialogue',
+                  ),
+                  SizedBox(height: 20),
+                  CustomTextField(
+                    controller: otherInfoController,
+                    labelText: 'Other Information',
+                    hintText: 'Please enter other information',
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel', style: TextStyle(color: Colors.red)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Submit', style: TextStyle(color: Colors.green)),
+              onPressed: () {
+                if (userRoleController.text.isEmpty &&
+                    aiRoleController.text.isEmpty &&
+                    locationController.text.isEmpty &&
+                    timeController.text.isEmpty &&
+                    otherInfoController.text.isEmpty) {
+                  // All fields are empty, show an error message.
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('Please fill in at least one field'),
+                    duration: Duration(seconds: 2),
+                  ));
+                } else {
+                  Navigator.of(context).pop({
+                    'userRole': userRoleController.text.isEmpty ? 'Not specified' : userRoleController.text,
+                    'aiRole': aiRoleController.text.isEmpty ? 'Not specified' : aiRoleController.text,
+                    'location': locationController.text.isEmpty ? 'Not specified' : locationController.text,
+                    'time': timeController.text.isEmpty ? 'Not specified' : timeController.text,
+                    'otherInfo': otherInfoController.text.isEmpty ? 'Not specified' : otherInfoController.text,
+                  });
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+  TextFormField _buildTextField(TextEditingController controller, String labelText) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: labelText,
+        contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +150,8 @@ class CustomDrawer extends StatelessWidget {
               style: TextStyle(color: Colors.black),
             ),
             currentAccountPicture: CircleAvatar(
-              backgroundImage: AssetImage(AssetsManager.openaiLogo), // Change this line with your variable
+              backgroundImage: AssetImage(AssetsManager
+                  .openaiLogo), // Change this line with your variable
             ),
             decoration: BoxDecoration(
               color: Color.fromRGBO(244, 243, 246, 1),
@@ -33,20 +159,49 @@ class CustomDrawer extends StatelessWidget {
           ),
           ListTile(
             title: Text('Free Talk'),
-            onTap: () {
-              // Put your onTap function here
+            onTap: () async {
+              await createConversation(context, 1, null);
+              String chosenModelId = 'gpt-3.5-turbo';
+              try {
+                final chatProvider = Provider.of<ChatProvider>(
+                    context, listen: false);
+                await chatProvider.handleFreeTalkButton(chosenModelId,1,null);
+              } catch (e) {
+                print(e);
+              }
+              Navigator.of(context).pop();
             },
           ),
+
           ListTile(
             title: Text('Roleplay Dialogue'),
-            onTap: () {
-              // Put your onTap function here
+            onTap: () async {
+              Map<String, String>? data = await showRoleplayDialogueForm(context);
+              if (data != null) {
+                List<String> parameters = [
+                  data['userRole']!,
+                  data['aiRole']!,
+                  data['location']!,
+                  data['time']!,
+                  data['otherInfo']!
+                ];
+                await createConversation(context, 2, parameters);
+                String chosenModelId = 'gpt-3.5-turbo';
+                try {
+                  final chatProvider = Provider.of<ChatProvider>(
+                      context, listen: false);
+                  await chatProvider.handleFreeTalkButton(chosenModelId,2,data);
+                } catch (e) {
+                  print(e);
+                }
+                Navigator.of(context).pop();
+              }
             },
           ),
           ListTile(
             title: Text('Review Prompts'),
-            onTap: () {
-              // Put your onTap function here
+            onTap: () async {
+              await createConversation(context, 3, null);
             },
           ),
           ListTile(
@@ -75,11 +230,13 @@ class CustomDrawer extends StatelessWidget {
                         child: Text('Yes'),
                         onPressed: () async {
                           user.isLoggedIn = false;
-                          int id = await DatabaseService.instance.getCurrentUserId();
+                          int id = await DatabaseService.instance
+                              .getCurrentUserId();
                           await DatabaseService.instance.updateUser(user, id);
                           Navigator.pushAndRemoveUntil(
                             context,
-                            MaterialPageRoute(builder: (context) => LoginPage()),
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage()),
                                 (Route<dynamic> route) => false,
                           );
                         },
@@ -97,4 +254,3 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 }
-

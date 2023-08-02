@@ -4,6 +4,8 @@ import 'package:chatgpt_course/database/wordbook_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
+import 'conversation_model.dart';
+
 class DatabaseService {
   static final _databaseName = "my_database.db";
   static final _databaseVersion = 1;
@@ -32,7 +34,22 @@ class DatabaseService {
   static final wordMasteredColumn = 'mastered';
   static final wordOriginalSentenceColumn = 'originalSentence';
 
+  // Conversation table
+  static final conversationTable = 'conversation';
+  static final conversationIdColumn = 'id';
+  static final conversationUserIdColumn = 'userId';
+  static final conversationTypeColumn = 'type';
+  static final conversationDateColumn = 'date';
+
+// Message table
+  static final messageTable = 'message';
+  static final messageIdColumn = 'id';
+  static final messageConversationIdColumn = 'conversationId';
+  static final messageContentColumn = 'content';
+  static final messageIsUserMessageColumn = 'isUserMessage';
+
   DatabaseService._privateConstructor();
+
   static final DatabaseService instance = DatabaseService._privateConstructor();
 
   static Database? _database;
@@ -45,7 +62,8 @@ class DatabaseService {
 
   _initDatabase() async {
     String path = join(await getDatabasesPath(), _databaseName);
-    return await openDatabase(path, version: _databaseVersion, onCreate: _onCreate);
+    return await openDatabase(path,
+        version: _databaseVersion, onCreate: _onCreate);
   }
 
   Future _onCreate(Database db, int version) async {
@@ -82,6 +100,28 @@ class DatabaseService {
         wordbookId INTEGER NOT NULL
       )
     ''');
+
+
+    // Create conversation table
+    await db.execute('''
+  CREATE TABLE $conversationTable (
+    $conversationIdColumn INTEGER PRIMARY KEY AUTOINCREMENT,
+    $conversationUserIdColumn INTEGER,
+    $conversationTypeColumn INTEGER NOT NULL,
+    $conversationDateColumn TEXT NOT NULL,
+    parameters TEXT
+  )
+''');
+
+// Create message table
+    await db.execute('''
+  CREATE TABLE $messageTable (
+    $messageIdColumn INTEGER PRIMARY KEY AUTOINCREMENT,
+    $messageConversationIdColumn INTEGER,
+    $messageContentColumn TEXT NOT NULL,
+    $messageIsUserMessageColumn INTEGER NOT NULL
+  )
+''');
   }
 
   Future<int> insertUser(Map<String, dynamic> row) async {
@@ -100,18 +140,15 @@ class DatabaseService {
 
     await createWordBook(insertedId);
 
-    List<Map<String, dynamic>> rows = await queryAllUsers();
-    print('All Users:');
-    rows.forEach((row) => print(row));
+    await printAllRows(userTable);
 
     return insertedId;
   }
 
-  // The rest of your original methods go here, removing any logic related to manually incrementing the id value
-
   Future<int> updateUser(User user, int id) async {
     Database db = await instance.database;
-    return await db.update(userTable, user.toMap(), where: '$userIdColumn = ?', whereArgs: [id]);
+    return await db.update(userTable, user.toMap(),
+        where: '$userIdColumn = ?', whereArgs: [id]);
   }
 
   Future<List<Map<String, dynamic>>> queryAllUsers() async {
@@ -121,37 +158,44 @@ class DatabaseService {
 
   Future<int> queryUserCount() async {
     Database db = await instance.database;
-    return Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM $userTable')) ?? 0;
+    return Sqflite.firstIntValue(
+            await db.rawQuery('SELECT COUNT(*) FROM $userTable')) ??
+        0;
   }
 
   Future<int> deleteUser(int id) async {
     Database db = await instance.database;
-    return await db.delete(userTable, where: '$userIdColumn = ?', whereArgs: [id]);
+    return await db
+        .delete(userTable, where: '$userIdColumn = ?', whereArgs: [id]);
   }
 
   Future<int> getCurrentUserId() async {
     Database db = await instance.database;
-    List<Map<String, dynamic>> result = await db.query(userTable, where: '$isLoggedInColumn = ?', whereArgs: [1]);
+    List<Map<String, dynamic>> result = await db
+        .query(userTable, where: '$isLoggedInColumn = ?', whereArgs: [1]);
     if (result.isNotEmpty) {
       return result.first[userIdColumn];
     }
     return -1;
   }
+
   Future<void> insertWordBook(Map<String, dynamic> row) async {
     Database db = await instance.database;
     await db.insert(wordBookTable, row);
-    await printAllWordBooks();
+    await printAllRows(wordBookTable);
   }
 
   Future<int> updateWordBook(Map<String, dynamic> row) async {
     Database db = await instance.database;
     int id = row[wordBookIdColumn];
-    return await db.update(wordBookTable, row, where: '$wordBookIdColumn = ?', whereArgs: [id]);
+    return await db.update(wordBookTable, row,
+        where: '$wordBookIdColumn = ?', whereArgs: [id]);
   }
 
   Future<int> deleteWordBook(int id) async {
     Database db = await instance.database;
-    return await db.delete(wordBookTable, where: '$wordBookIdColumn = ?', whereArgs: [id]);
+    return await db
+        .delete(wordBookTable, where: '$wordBookIdColumn = ?', whereArgs: [id]);
   }
 
   Future<List<Map<String, dynamic>>> queryAllWordBooks() async {
@@ -161,15 +205,11 @@ class DatabaseService {
 
   Future<int> insertWord(Map<String, dynamic> row) async {
     Database db = await instance.database;
-
-    // get wordbookId of the current user
     int wordbookId = await getCurrentUserWordBookId();
-
-    // If a wordbook is found for the current user
     if (wordbookId != -1) {
       row['wordbookId'] = wordbookId; // Add wordbookId to the row
       int insertedId = await db.insert(wordTable, row);
-      await printAllWords();
+      await printAllRows(wordTable);
       return insertedId;
     } else {
       throw Exception('No wordbook found for the current user');
@@ -179,31 +219,25 @@ class DatabaseService {
   Future<int> getCurrentUserWordBookId() async {
     int currentUserId = await getCurrentUserId();
     Database db = await instance.database;
-    List<Map<String, dynamic>> result = await db.query(wordBookTable, where: '$wordBookUserIdColumn = ?', whereArgs: [currentUserId]);
+    List<Map<String, dynamic>> result = await db.query(wordBookTable,
+        where: '$wordBookUserIdColumn = ?', whereArgs: [currentUserId]);
     if (result.isNotEmpty) {
       return result.first[wordBookIdColumn];
     }
     return -1;
   }
 
-  Future<void> printAllWords() async {
-    Database db = await instance.database;
-    List<Map<String, dynamic>> results = await db.query(wordTable);
-    print('All words in the database:');
-    for (var row in results) {
-      print(row);
-    }
-  }
-
   Future<int> updateWord(Map<String, dynamic> row) async {
     Database db = await instance.database;
     int id = row[wordIdColumn];
-    return await db.update(wordTable, row, where: '$wordIdColumn = ?', whereArgs: [id]);
+    return await db
+        .update(wordTable, row, where: '$wordIdColumn = ?', whereArgs: [id]);
   }
 
   Future<int> deleteWord(int id) async {
     Database db = await instance.database;
-    return await db.delete(wordTable, where: '$wordIdColumn = ?', whereArgs: [id]);
+    return await db
+        .delete(wordTable, where: '$wordIdColumn = ?', whereArgs: [id]);
   }
 
   Future<List<Map<String, dynamic>>> queryAllWords() async {
@@ -217,22 +251,33 @@ class DatabaseService {
     await insertWordBook(wordBook.toMap());
   }
 
-  Future<void> printAllWordBooks() async {
-    Database db = await instance.database;
-    List<Map<String, dynamic>> results = await db.query(wordBookTable);
-    print('All wordbooks in the database:');
-    for (var row in results) {
-      print(row);
-    }
-  }
 
   Future<String> getUserName(int userId) async {
     Database db = await instance.database;
-    var result = await db.query(userTable, where: '$userIdColumn = ?', whereArgs: [userId], columns: [usernameColumn]);
+    var result = await db.query(userTable,
+        where: '$userIdColumn = ?',
+        whereArgs: [userId],
+        columns: [usernameColumn]);
     if (result.isNotEmpty) {
       return result.first[usernameColumn] as String;
     } else {
       throw Exception('User with id $userId not found');
+    }
+  }
+
+  Future<int> insertConversation(Conversation conversation) async {
+    Database db = await instance.database;
+    int id = await db.insert(conversationTable, conversation.toMap());
+    await printAllRows(conversationTable);
+    return id;
+  }
+
+  Future<void> printAllRows(String tableName) async {
+    Database db = await instance.database;
+    List<Map<String, dynamic>> results = await db.query(tableName);
+    print('All rows in the $tableName:');
+    for (var row in results) {
+      print(row);
     }
   }
 }
