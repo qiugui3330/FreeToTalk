@@ -4,34 +4,9 @@ import 'dart:io';
 
 import 'package:chatgpt_course/constants/api_consts.dart';
 import 'package:chatgpt_course/models/chat_model.dart';
-import 'package:chatgpt_course/models/models_model.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String MODEL_ID = "gpt-3.5-turbo";
-
-  static Future<List<ModelsModel>> getModels() async {
-    try {
-      var response = await http.get(
-        Uri.parse("$BASE_URL/models"),
-        headers: {'Authorization': 'Bearer $API_KEY'},
-      );
-
-      Map jsonResponse = jsonDecode(response.body);
-
-      if (jsonResponse['error'] != null) {
-        throw HttpException(jsonResponse['error']["message"]);
-      }
-      List temp = [];
-      for (var value in jsonResponse["data"]) {
-        temp.add(value);
-      }
-      return ModelsModel.modelsFromSnapshot(temp);
-    } catch (error) {
-      log("error $error");
-      rethrow;
-    }
-  }
 
   static Future<List<ChatModel>> chatWithModel(
       {required String message}) async {
@@ -45,7 +20,7 @@ class ApiService {
         },
         body: jsonEncode(
           {
-            "model": MODEL_ID,
+            "model": MODEL_NAME,
             "messages": [
               {
                 "role": "user",
@@ -90,7 +65,7 @@ class ApiService {
         },
         body: jsonEncode(
           {
-            "model": MODEL_ID,
+            "model": MODEL_NAME,
             "prompt": message,
             "max_tokens": 300,
           },
@@ -124,7 +99,6 @@ class ApiService {
     try {
       String prompt = "\"$word\" 在 \"$fullSentence\" 中是什么意思？请用中文回答，只给出 \"$word\" 在这句中表达的意思。";
 
-      // Print the question to the console
       print('Question: $prompt');
 
       var response = await http.post(
@@ -135,7 +109,7 @@ class ApiService {
         },
         body: jsonEncode(
           {
-            "model": "text-davinci-003", // or your preferred model
+            "model": MODEL_NAME, // or your preferred model
             "prompt": prompt,
             "max_tokens": 600
           },

@@ -40,7 +40,8 @@ class ChatProvider with ChangeNotifier {
   Future<void> getTranslationAndDisplay(String word, String fullSentence) async {
     translation = 'Querying...'; // set to "Querying..." before the query
     notifyListeners();
-    translation = await ApiService.getTranslation(word: word, fullSentence: fullSentence);
+    String prompt = "\"$word\" 在 \"$fullSentence\" 中是什么意思？请用中文回答，只给出 \"$word\" 在这句中表达的意思。";
+    translation = await ApiService.getTranslation(word: prompt, fullSentence: fullSentence);
     notifyListeners();
   }
 
