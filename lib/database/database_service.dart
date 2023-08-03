@@ -245,6 +245,24 @@ class DatabaseService {
     return await db.query(wordTable);
   }
 
+  Future<List<String>> getWordsFromDaysAgo(List<int> daysAgoList) async {
+    List<String> words = [];
+    Database db = await instance.database;
+    List<Map<String, dynamic>> allWords = await db.query(wordTable);
+
+    DateTime now = DateTime.now();
+    for (var word in allWords) {
+      DateTime addDate = DateTime.parse(word[wordAddDateColumn]);
+      int daysAgo = now.difference(addDate).inDays;
+
+      if (daysAgoList.contains(daysAgo)) {
+        words.add(word[wordWordColumn]);
+      }
+    }
+
+    return words;
+  }
+
   Future<void> createWordBook(int userId) async {
     String name = await getUserName(userId) + "'s wordbook";
     WordBook wordBook = WordBook(userId: userId, name: name);

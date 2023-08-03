@@ -23,6 +23,7 @@ class CustomDrawer extends StatelessWidget {
     await DatabaseService.instance.insertConversation(conversation);
   }
 
+
   Future<Map<String, String>?> showRoleplayDialogueForm(BuildContext context) {
     TextEditingController userRoleController = TextEditingController();
     TextEditingController aiRoleController = TextEditingController();
@@ -159,18 +160,7 @@ class CustomDrawer extends StatelessWidget {
           ),
           ListTile(
             title: Text('Free Talk'),
-            onTap: () async {
-              await createConversation(context, 1, null);
-              String chosenModelId = 'gpt-3.5-turbo';
-              try {
-                final chatProvider = Provider.of<ChatProvider>(
-                    context, listen: false);
-                await chatProvider.handleFreeTalkButton(chosenModelId,1,null);
-              } catch (e) {
-                print(e);
-              }
-              Navigator.of(context).pop();
-            },
+            onTap: () => handleListTileTap(context, 1, null, null, 'gpt-3.5-turbo'),
           ),
 
           ListTile(
@@ -185,25 +175,24 @@ class CustomDrawer extends StatelessWidget {
                   data['time']!,
                   data['otherInfo']!
                 ];
-                await createConversation(context, 2, parameters);
-                String chosenModelId = 'gpt-3.5-turbo';
-                try {
-                  final chatProvider = Provider.of<ChatProvider>(
-                      context, listen: false);
-                  await chatProvider.handleFreeTalkButton(chosenModelId,2,data);
-                } catch (e) {
-                  print(e);
-                }
-                Navigator.of(context).pop();
+                await handleListTileTap(context, 2, data, parameters, 'gpt-3.5-turbo');
               }
             },
           ),
+
           ListTile(
             title: Text('Review Prompts'),
             onTap: () async {
-              await createConversation(context, 3, null);
+              DatabaseService dbService = DatabaseService.instance;
+              List<String> parameters = await dbService.getWordsFromDaysAgo([0, 1, 3, 6, 14, 29]);
+              Map<String, String> data = {};
+              for (int i = 0; i < parameters.length; i++) {
+                data[i.toString()] = parameters[i];
+              }
+              await handleListTileTap(context, 3, data, parameters, 'gpt-3.5-turbo');
             },
           ),
+
           ListTile(
             title: Text('Word book'),
             onTap: () {
@@ -253,4 +242,21 @@ class CustomDrawer extends StatelessWidget {
       ),
     );
   }
+
+  Future<void> handleListTileTap(
+      BuildContext context,
+      int id,
+      Map<String, String>? data,
+      List<String>? parameters,
+      String chosenModelId) async {
+    await createConversation(context, id, parameters);
+    try {
+      final chatProvider = Provider.of<ChatProvider>(context, listen: false);
+      await chatProvider.handleFreeTalkButton(chosenModelId, id, data);
+    } catch (e) {
+      print(e);
+    }
+    Navigator.of(context).pop();
+  }
+
 }
