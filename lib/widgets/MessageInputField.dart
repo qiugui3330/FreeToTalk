@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import '../constants/constants.dart';
 import '../providers/chats_provider.dart';
-import '../providers/models_provider.dart';
 import 'SendButton.dart';
 
 class MessageInputField extends StatelessWidget {
   final TextEditingController textEditingController;
   final FocusNode focusNode;
   final Function(String) onSubmitted;
-  final ModelsProvider modelsProvider;
   final ChatProvider chatProvider;
   final Function scrollListToEND;
   final Function sendMessageFCT;
@@ -20,7 +18,6 @@ class MessageInputField extends StatelessWidget {
     required this.textEditingController,
     required this.focusNode,
     required this.onSubmitted,
-    required this.modelsProvider,
     required this.chatProvider,
     required this.scrollListToEND,
     required this.sendMessageFCT,
@@ -65,10 +62,9 @@ class MessageInputField extends StatelessWidget {
               SendButton(
                 focusNode: focusNode,
                 textEditingController: textEditingController,
-                modelsProvider: modelsProvider,
-                chatProvider: chatProvider,
                 scrollListToEND: scrollListToEND,
                 sendMessageFCT: sendMessageFCT,
+                chatProvider: chatProvider,
               ),
             ],
           ),

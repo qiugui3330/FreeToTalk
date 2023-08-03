@@ -8,7 +8,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/models_provider.dart';
 import '../services/assets_manager.dart';
 import '../widgets/CustomDrawer.dart';
 import '../widgets/TextWidget.dart';
@@ -49,10 +48,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final modelsProvider = Provider.of<ModelsProvider>(context);
     final chatProvider = Provider.of<ChatProvider>(context);
     final conversationProvider = Provider.of<ConversationProvider>(context);
-    String model = conversationProvider.getCurrentModelName() ?? 'GPT';
 
     return Scaffold(
       appBar: AppBar(
@@ -92,38 +89,53 @@ class _ChatScreenState extends State<ChatScreen> {
                   SizedBox(
                     height: 4,
                   ),
-                  Text(
-                    model,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.green,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Consumer<ConversationProvider>(
+                    builder: (context, provider, child) {
+                      return Text(
+                        provider.getCurrentModelName() ?? 'Default mode',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
             ),
           ],
         ),
+
         actions: [
           SizedBox(
             width: 5,
           ),
-          PopupMenuButton(
-            icon: Icon(Icons.more_vert, color: Colors.black),
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                child: Text("Finish Conversation"),
-                value: "exit",
-              ),
-            ],
-            onSelected: (value) {
-              if (value == "exit") {
-                conversationProvider.clearCurrentConversation();
-                Provider.of<ChatProvider>(context, listen: false).clearChat();
-              }
+          Consumer<ConversationProvider>(
+            builder: (context, conversationProvider, child) {
+              return conversationProvider.getCurrentConversation() != null
+                  ? IconButton(
+                icon: Icon(Icons.exit_to_app, color: Colors.black),
+                onPressed: () {
+                  String modelName = conversationProvider.getCurrentModelName() ?? "Unknown Model";
+                  conversationProvider.clearCurrentConversation();
+                  Provider.of<ChatProvider>(context, listen: false).clearChat();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Exited $modelName, conversation ended.'),
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                    ),
+                  );
+                },
+              )
+                  : SizedBox.shrink();
             },
           ),
+
+
           SizedBox(
             width: 20,
           ),
@@ -153,13 +165,9 @@ class _ChatScreenState extends State<ChatScreen> {
               focusNode: focusNode,
               textEditingController: textEditingController,
               onSubmitted: (String value) {
-                sendMessageFCT(
-                  modelsProvider: modelsProvider,
-                  chatProvider: chatProvider,
-                );
+                sendMessageFCT(chatProvider: chatProvider);
                 scrollListToEND();
               },
-              modelsProvider: modelsProvider,
               chatProvider: chatProvider,
               scrollListToEND: scrollListToEND,
               sendMessageFCT: sendMessageFCT,
@@ -177,9 +185,7 @@ class _ChatScreenState extends State<ChatScreen> {
         curve: Curves.easeOut);
   }
 
-  Future<void> sendMessageFCT(
-      {required ModelsProvider modelsProvider,
-        required ChatProvider chatProvider}) async {
+  Future<void> sendMessageFCT({required ChatProvider chatProvider}) async {
     if (_isTyping) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -210,8 +216,7 @@ class _ChatScreenState extends State<ChatScreen> {
         textEditingController.clear();
         focusNode.unfocus();
       });
-      await chatProvider.sendMessageAndGetAnswers(
-          msg: msg, chosenModelId: modelsProvider.getCurrentModel);
+      await chatProvider.sendMessageAndGetAnswers(msg: msg, chosenModelId: "gpt-3.5-turbo");
 
       setState(() {});
     } catch (error) {

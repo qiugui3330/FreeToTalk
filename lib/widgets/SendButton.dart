@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:chatgpt_course/providers/models_provider.dart';
 import 'package:chatgpt_course/providers/chats_provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
@@ -8,7 +7,6 @@ class SendButton extends StatefulWidget {
   final TextEditingController textEditingController;
   final Function scrollListToEND;
   final Function sendMessageFCT;
-  final ModelsProvider modelsProvider;
   final ChatProvider chatProvider;
 
   SendButton({
@@ -16,7 +14,6 @@ class SendButton extends StatefulWidget {
     required this.textEditingController,
     required this.scrollListToEND,
     required this.sendMessageFCT,
-    required this.modelsProvider,
     required this.chatProvider,
   });
 
@@ -57,7 +54,6 @@ class _SendButtonState extends State<SendButton> {
       if (_speechText.isNotEmpty) {
         widget.textEditingController.text = _speechText;
         widget.sendMessageFCT(
-          modelsProvider: widget.modelsProvider,
           chatProvider: widget.chatProvider,
         );
         _speechText = '';
@@ -67,10 +63,8 @@ class _SendButtonState extends State<SendButton> {
 
   @override
   Widget build(BuildContext context) {
-
     void sendMessageWrapper() {
       widget.sendMessageFCT(
-        modelsProvider: widget.modelsProvider,
         chatProvider: widget.chatProvider,
       );
     }

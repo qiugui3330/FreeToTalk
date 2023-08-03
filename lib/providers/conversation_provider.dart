@@ -18,11 +18,11 @@ class ConversationProvider with ChangeNotifier {
     if (_currentConversation == null) return null;
     switch (_currentConversation!.type) {
       case 1:
-        return "Free Talk";
+        return 'Free Talk';
       case 2:
-        return "Roleplay Dialogue";
+        return 'Roleplay Dialogue';
       case 3:
-        return "Review Prompts";
+        return 'Review Prompts';
       default:
         return null;
     }

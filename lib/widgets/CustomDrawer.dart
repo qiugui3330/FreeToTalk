@@ -126,20 +126,6 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
-
-  TextFormField _buildTextField(TextEditingController controller, String labelText) {
-    return TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: labelText,
-        contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -165,12 +151,16 @@ class CustomDrawer extends StatelessWidget {
           ),
           ListTile(
             title: Text('Free Talk'),
-            onTap: () => handleListTileTap(context, 1, null, null, 'gpt-3.5-turbo'),
+            onTap: () {
+              Navigator.of(context).pop();  // close drawer
+              handleListTileTap(context, 1, null, null, 'gpt-3.5-turbo');
+            },
           ),
 
           ListTile(
             title: Text('Roleplay Dialogue'),
             onTap: () async {
+              Navigator.of(context).pop();
               Map<String, String>? data = await showRoleplayDialogueForm(context);
               if (data != null) {
                 List<String> parameters = [
@@ -188,6 +178,7 @@ class CustomDrawer extends StatelessWidget {
           ListTile(
             title: Text('Review Prompts'),
             onTap: () async {
+              Navigator.of(context).pop();
               DatabaseService dbService = DatabaseService.instance;
               List<String> parameters = await dbService.getWordsFromDaysAgo([0, 1, 3, 6, 14, 29]);
               Map<String, String> data = {};
