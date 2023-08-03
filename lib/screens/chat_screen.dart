@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:chatgpt_course/providers/chats_provider.dart';
+import 'package:chatgpt_course/providers/conversation_provider.dart';
 import 'package:chatgpt_course/database/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -50,6 +51,9 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     final modelsProvider = Provider.of<ModelsProvider>(context);
     final chatProvider = Provider.of<ChatProvider>(context);
+    final conversationProvider = Provider.of<ConversationProvider>(context);
+    String model = conversationProvider.getCurrentModelName() ?? 'GPT';
+
     return Scaffold(
       appBar: AppBar(
         elevation: 2,
@@ -89,7 +93,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     height: 4,
                   ),
                   Text(
-                    'GPT',
+                    model,
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.green,
@@ -105,15 +109,20 @@ class _ChatScreenState extends State<ChatScreen> {
           SizedBox(
             width: 5,
           ),
-          IconButton(
-            onPressed: () async {
-              // await Services.showModalSheet(context: context);
+          PopupMenuButton(
+            icon: Icon(Icons.more_vert, color: Colors.black),
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                child: Text("Finish Conversation"),
+                value: "exit",
+              ),
+            ],
+            onSelected: (value) {
+              if (value == "exit") {
+                conversationProvider.clearCurrentConversation();
+                Provider.of<ChatProvider>(context, listen: false).clearChat();
+              }
             },
-            icon: Icon(
-              LineAwesomeIcons.vertical_ellipsis,
-              size: 30,
-              color: Colors.black87,
-            ),
           ),
           SizedBox(
             width: 20,
@@ -197,7 +206,6 @@ class _ChatScreenState extends State<ChatScreen> {
       String msg = textEditingController.text;
       setState(() {
         _isTyping = true;
-        // chatList.add(ChatModel(msg: textEditingController.text, chatIndex: 0));
         chatProvider.addUserMessage(msg: msg);
         textEditingController.clear();
         focusNode.unfocus();
@@ -205,10 +213,6 @@ class _ChatScreenState extends State<ChatScreen> {
       await chatProvider.sendMessageAndGetAnswers(
           msg: msg, chosenModelId: modelsProvider.getCurrentModel);
 
-      // chatList.addAll(await ApiService.sendMessage(
-      //   message: textEditingController.text,
-      //   modelId: modelsProvider.getCurrentModel,
-      // ));
       setState(() {});
     } catch (error) {
       log("error $error");

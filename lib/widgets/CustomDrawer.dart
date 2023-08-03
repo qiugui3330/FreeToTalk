@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../database/conversation_model.dart';
 import '../database/database_service.dart';
 import '../providers/chats_provider.dart';
+import '../providers/conversation_provider.dart';
 import '../services/assets_manager.dart';
 import '../auth/login_page.dart';
 import '../database/user_model.dart';
@@ -14,6 +15,7 @@ class CustomDrawer extends StatelessWidget {
   const CustomDrawer({Key? key, required this.user}) : super(key: key);
 
   Future<void> createConversation(BuildContext context, int type, List<String>? parameters) async {
+    Provider.of<ChatProvider>(context, listen: false).clearChat();
     var conversation = Conversation(
       userId: await DatabaseService.instance.getCurrentUserId(),
       type: type,
@@ -21,6 +23,9 @@ class CustomDrawer extends StatelessWidget {
       parameters: parameters,
     );
     await DatabaseService.instance.insertConversation(conversation);
+
+    // get ConversationProvider and set current conversation
+    Provider.of<ConversationProvider>(context, listen: false).setCurrentConversation(conversation);
   }
 
 

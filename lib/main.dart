@@ -1,3 +1,4 @@
+import 'package:chatgpt_course/providers/conversation_provider.dart';
 import 'package:chatgpt_course/providers/models_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,14 +21,42 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   final AuthenticationService _authService = AuthenticationService();
   late Future<User?> _loggedInUserFuture;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance!.addObserver(this);
     _loggedInUserFuture = _authService.getLoggedInUser();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    final conversationProvider = Provider.of<ConversationProvider>(context, listen: false);
+    final chatProvider = Provider.of<ChatProvider>(context, listen: false);
+
+    switch (state) {
+      case AppLifecycleState.paused:
+        break;
+      case AppLifecycleState.resumed:
+        break;
+      case AppLifecycleState.inactive:
+        break;
+      case AppLifecycleState.detached:
+        conversationProvider.clearCurrentConversation();
+        Provider.of<ChatProvider>(context, listen: false).clearChat();
+        break;
+    }
   }
 
   @override
@@ -39,6 +68,9 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProvider(
           create: (_) => ChatProvider(),
+        ),
+        ChangeNotifierProvider( // Add ConversationProvider
+          create: (_) => ConversationProvider(),
         ),
         Provider(
           create: (_) => _authService,
