@@ -11,7 +11,25 @@ import 'screens/chat_screen.dart';
 import 'database/user_model.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => ModelsProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ChatProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ConversationProvider(),
+        ),
+        Provider(
+          create: (_) => AuthenticationService(),
+        ),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -54,50 +72,34 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         break;
       case AppLifecycleState.detached:
         conversationProvider.clearCurrentConversation();
-        Provider.of<ChatProvider>(context, listen: false).clearChat();
+        chatProvider.clearChat();
         break;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => ModelsProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => ChatProvider(),
-        ),
-        ChangeNotifierProvider( // Add ConversationProvider
-          create: (_) => ConversationProvider(),
-        ),
-        Provider(
-          create: (_) => _authService,
-        ),
-      ],
-      child: MaterialApp(
-        title: 'FreeToTalk',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-            scaffoldBackgroundColor: scaffoldBackgroundColor,
-            appBarTheme: AppBarTheme(
-              color: cardColor,
-            )),
-        home: FutureBuilder<User?>(
-          future: _loggedInUserFuture,
-          builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              if (snapshot.hasData && snapshot.data != null) {
-                return ChatScreen(user: snapshot.data!);
-              } else {
-                return LoginPage();
-              }
+    return MaterialApp(
+      title: 'FreeToTalk',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+          scaffoldBackgroundColor: scaffoldBackgroundColor,
+          appBarTheme: AppBarTheme(
+            color: cardColor,
+          )),
+      home: FutureBuilder<User?>(
+        future: _loggedInUserFuture,
+        builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasData && snapshot.data != null) {
+              return ChatScreen(user: snapshot.data!);
             } else {
-              return Center(child: CircularProgressIndicator()); // Loading spinner
+              return LoginPage();
             }
-          },
-        ),
+          } else {
+            return Center(child: CircularProgressIndicator()); // Loading spinner
+          }
+        },
       ),
     );
   }
