@@ -9,11 +9,12 @@ import '../auth/login_page.dart';
 import '../database/user_model.dart';
 import 'CustomTextField.dart';
 
+// 自定义抽屉组件
 class CustomDrawer extends StatelessWidget {
   final User user;
 
   const CustomDrawer({Key? key, required this.user}) : super(key: key);
-
+  // 创建对话
   Future<void> createConversation(BuildContext context, int type, List<String>? parameters) async {
     Provider.of<MessageProvider>(context, listen: false).clearChat();
     var conversation = Conversation(
@@ -24,18 +25,18 @@ class CustomDrawer extends StatelessWidget {
     );
     await DatabaseService.instance.insertConversation(conversation);
 
-    // get ConversationProvider and set current conversation
+    // 获取ConversationProvider并设置当前对话
     Provider.of<ConversationProvider>(context, listen: false).setCurrentConversation(conversation);
   }
 
-
+  // 显示角色扮演对话框表单
   Future<Map<String, String>?> showRoleplayDialogueForm(BuildContext context) {
     TextEditingController userRoleController = TextEditingController();
     TextEditingController aiRoleController = TextEditingController();
     TextEditingController locationController = TextEditingController();
     TextEditingController timeController = TextEditingController();
     TextEditingController otherInfoController = TextEditingController();
-
+    // 创建AlertDialog供用户输入各类信息
     return showDialog<Map<String, String>>(
       context: context,
       builder: (BuildContext context) {

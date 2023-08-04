@@ -1,10 +1,13 @@
+// 导入必要的包和模块
 import 'package:chatgpt_course/widgets/WordSelectionDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:chatgpt_course/services/assets_manager.dart';
-import 'package:chatgpt_course/services/TtsService.dart'; // import TtsService
+import 'package:chatgpt_course/services/TtsService.dart'; // 导入 TtsService
 import 'TextWidget.dart';
 
+// 定义一个名为 ChatWidget 的有状态的 widget
 class ChatWidget extends StatefulWidget {
+  // 构造函数，用于初始化 ChatWidget 的实例
   const ChatWidget({
     super.key,
     required this.msg,
@@ -20,19 +23,23 @@ class ChatWidget extends StatefulWidget {
   _ChatWidgetState createState() => _ChatWidgetState();
 }
 
+// ChatWidget 的状态类
 class _ChatWidgetState extends State<ChatWidget> {
+  // 定义和初始化状态变量
   bool _isTextVisible = false;
-  final TtsService _ttsService = TtsService(); // Move initialization here
+  final TtsService _ttsService = TtsService(); // 在这里初始化 TtsService
   String? _selectedWord;
 
+  // initState 是一个特殊的函数，在 widget 生命周期中，当 widget 创建并插入到 widget 树中时，该函数会被调用
   @override
   void initState() {
     super.initState();
     if (widget.chatIndex != 0) {
-      _ttsService.speak(widget.msg); // use TtsService's speak method
+      _ttsService.speak(widget.msg); // 使用 TtsService 的 speak 方法
     }
   }
 
+  // _showWordSelectionDialog 方法用于显示单词选择对话框
   void _showWordSelectionDialog(String msg) {
     showGeneralDialog(
       context: context,
@@ -49,6 +56,7 @@ class _ChatWidgetState extends State<ChatWidget> {
     );
   }
 
+  // build 方法用于构建 widget 的 UI
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -111,7 +119,7 @@ class _ChatWidgetState extends State<ChatWidget> {
               IconButton(
                 icon: Icon(Icons.play_arrow),
                 onPressed: () async {
-                  await _ttsService.speak(widget.msg); // use TtsService's speak method
+                  await _ttsService.speak(widget.msg); // 使用 TtsService 的 speak 方法
                 },
               )
             else
@@ -137,7 +145,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                     IconButton(
                       icon: Icon(Icons.play_arrow),
                       onPressed: () async {
-                        await _ttsService.speak(widget.msg); // use TtsService's speak method
+                        await _ttsService.speak(widget.msg); // 使用 TtsService 的 speak 方法
                       },
                     ),
                   ],
