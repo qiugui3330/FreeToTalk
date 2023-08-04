@@ -7,7 +7,8 @@ import 'dart:math';
 
 import '../database/database_service.dart';
 import '../database/word_model.dart';
-import '../providers/chats_provider.dart';
+import '../providers/messages_provider.dart';
+
 
 class WordSelectionDialog extends StatefulWidget {
   final String msg;
@@ -22,7 +23,7 @@ class WordSelectionDialog extends StatefulWidget {
 class _WordSelectionDialogState extends State<WordSelectionDialog> {
   List<int> _selectedWords = [];
   int? _multiSelectStartIndex;
-  late ChatProvider provider;
+  late MessageProvider provider;
   late TtsService _ttsService;
   Timer? _timer;
   String? _lastTranslationQuery;
@@ -32,7 +33,7 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
   void initState() {
     super.initState();
     _ttsService = TtsService();
-    provider = Provider.of<ChatProvider>(context, listen: false);
+    provider = Provider.of<MessageProvider>(context, listen: false);
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       provider.setTranslation('');
     });
@@ -197,7 +198,7 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                     children: [
                       Expanded(
                         flex: 3,
-                        child: Consumer<ChatProvider>(
+                        child: Consumer<MessageProvider>(
                           builder: (context, chatProvider, _) =>
                               SingleChildScrollView(
                                 child: Padding(

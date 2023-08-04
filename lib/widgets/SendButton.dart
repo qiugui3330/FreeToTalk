@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:chatgpt_course/providers/chats_provider.dart';
+import 'package:chatgpt_course/providers/messages_provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class SendButton extends StatefulWidget {
@@ -7,7 +7,7 @@ class SendButton extends StatefulWidget {
   final TextEditingController textEditingController;
   final Function scrollListToEND;
   final Function sendMessageFCT;
-  final ChatProvider chatProvider;
+  final MessageProvider chatProvider;
 
   SendButton({
     required this.focusNode,

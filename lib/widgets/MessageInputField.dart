@@ -2,14 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import '../constants/constants.dart';
-import '../providers/chats_provider.dart';
+import '../providers/messages_provider.dart';
 import 'SendButton.dart';
 
 class MessageInputField extends StatelessWidget {
   final TextEditingController textEditingController;
   final FocusNode focusNode;
   final Function(String) onSubmitted;
-  final ChatProvider chatProvider;
+  final MessageProvider chatProvider;
   final Function scrollListToEND;
   final Function sendMessageFCT;
 

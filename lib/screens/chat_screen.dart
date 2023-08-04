@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:chatgpt_course/providers/chats_provider.dart';
+import 'package:chatgpt_course/providers/messages_provider.dart';
 import 'package:chatgpt_course/providers/conversation_provider.dart';
 import 'package:chatgpt_course/database/user_model.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +48,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final chatProvider = Provider.of<ChatProvider>(context);
+    final chatProvider = Provider.of<MessageProvider>(context);
     final conversationProvider = Provider.of<ConversationProvider>(context);
 
     return Scaffold(
@@ -119,7 +119,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 onPressed: () {
                   String modelName = conversationProvider.getCurrentModelName() ?? "Unknown Model";
                   conversationProvider.clearCurrentConversation();
-                  Provider.of<ChatProvider>(context, listen: false).clearChat();
+                  Provider.of<MessageProvider>(context, listen: false).clearChat();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('Exited $modelName, conversation ended.'),
@@ -185,7 +185,7 @@ class _ChatScreenState extends State<ChatScreen> {
         curve: Curves.easeOut);
   }
 
-  Future<void> sendMessageFCT({required ChatProvider chatProvider}) async {
+  Future<void> sendMessageFCT({required MessageProvider chatProvider}) async {
     if (_isTyping) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -216,7 +216,7 @@ class _ChatScreenState extends State<ChatScreen> {
         textEditingController.clear();
         focusNode.unfocus();
       });
-      await chatProvider.sendMessageAndGetAnswers(msg: msg, chosenModelId: "gpt-3.5-turbo");
+      await chatProvider.sendMessageAndGetAnswers(msg: msg);
 
       setState(() {});
     } catch (error) {

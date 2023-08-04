@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../database/conversation_model.dart';
 import '../database/database_service.dart';
-import '../providers/chats_provider.dart';
+import '../providers/messages_provider.dart';
 import '../providers/conversation_provider.dart';
 import '../services/assets_manager.dart';
 import '../auth/login_page.dart';
@@ -15,7 +15,7 @@ class CustomDrawer extends StatelessWidget {
   const CustomDrawer({Key? key, required this.user}) : super(key: key);
 
   Future<void> createConversation(BuildContext context, int type, List<String>? parameters) async {
-    Provider.of<ChatProvider>(context, listen: false).clearChat();
+    Provider.of<MessageProvider>(context, listen: false).clearChat();
     var conversation = Conversation(
       userId: await DatabaseService.instance.getCurrentUserId(),
       type: type,
@@ -153,7 +153,7 @@ class CustomDrawer extends StatelessWidget {
             title: Text('Free Talk'),
             onTap: () {
               Navigator.of(context).pop();  // close drawer
-              handleListTileTap(context, 1, null, null, 'gpt-3.5-turbo');
+              handleListTileTap(context, 1, null, null);
             },
           ),
 
@@ -170,7 +170,7 @@ class CustomDrawer extends StatelessWidget {
                   data['time']!,
                   data['otherInfo']!
                 ];
-                await handleListTileTap(context, 2, data, parameters, 'gpt-3.5-turbo');
+                await handleListTileTap(context, 2, data, parameters);
               }
             },
           ),
@@ -185,7 +185,7 @@ class CustomDrawer extends StatelessWidget {
               for (int i = 0; i < parameters.length; i++) {
                 data[i.toString()] = parameters[i];
               }
-              await handleListTileTap(context, 3, data, parameters, 'gpt-3.5-turbo');
+              await handleListTileTap(context, 3, data, parameters);
             },
           ),
 
@@ -243,16 +243,14 @@ class CustomDrawer extends StatelessWidget {
       BuildContext context,
       int id,
       Map<String, String>? data,
-      List<String>? parameters,
-      String chosenModelId) async {
+      List<String>? parameters) async {
     await createConversation(context, id, parameters);
     try {
-      final chatProvider = Provider.of<ChatProvider>(context, listen: false);
-      await chatProvider.handleFreeTalkButton(chosenModelId, id, data);
+      final messageProvider = Provider.of<MessageProvider>(context, listen: false);
+      await messageProvider.handleConversationBasedOnMode(id, data);
     } catch (e) {
       print(e);
     }
-    Navigator.of(context).pop();
   }
 
 }

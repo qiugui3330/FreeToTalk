@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'services/authentication_service.dart';
 import 'constants/constants.dart';
-import 'providers/chats_provider.dart';
+import 'providers/messages_provider.dart';
 import 'auth/login_page.dart';
 import 'screens/chat_screen.dart';
 import 'database/user_model.dart';
@@ -14,7 +14,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => ChatProvider(),
+          create: (_) => MessageProvider(),
         ),
         ChangeNotifierProvider(
           create: (_) => ConversationProvider(),
@@ -57,7 +57,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.didChangeAppLifecycleState(state);
 
     final conversationProvider = Provider.of<ConversationProvider>(context, listen: false);
-    final chatProvider = Provider.of<ChatProvider>(context, listen: false);
+    final chatProvider = Provider.of<MessageProvider>(context, listen: false);
 
     switch (state) {
       case AppLifecycleState.paused:
