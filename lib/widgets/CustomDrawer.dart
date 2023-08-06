@@ -164,7 +164,7 @@ class CustomDrawer extends StatelessWidget {
           ListTile(
             title: Text('Roleplay Dialogue'),
             onTap: () async {
-              Navigator.of(context).pop();
+              BuildContext currentContext = context; // Save the context before showing the dialog
               Map<String, String>? data = await showRoleplayDialogueForm(context);
               if (data != null) {
                 List<String> parameters = [
@@ -174,7 +174,7 @@ class CustomDrawer extends StatelessWidget {
                   data['time']!,
                   data['otherInfo']!
                 ];
-                await handleListTileTap(context, 2, data, parameters);
+                await handleListTileTap(currentContext!, 2, data, parameters); // Use the saved context
               }
             },
           ),
@@ -256,5 +256,4 @@ class CustomDrawer extends StatelessWidget {
       print(e);
     }
   }
-
 }
