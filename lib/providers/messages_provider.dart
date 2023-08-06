@@ -1,12 +1,17 @@
 import 'package:flutter/cupertino.dart';
+import '../database/database_service.dart';
+import '../database/message_model.dart';
 import '../models/chat_model.dart';
 import '../services/api_service.dart';
+import 'conversation_provider.dart';
 
 // MessageProvider类用于提供和处理消息相关的服务和操作
 class MessageProvider with ChangeNotifier {
   List<ChatModel> chatList = []; // 存储聊天内容的列表
   String translation = ''; // 存储翻译结果的字符串
+  final ConversationProvider _conversationProvider;
 
+  MessageProvider(this._conversationProvider);
   // 获取翻译结果的函数
   String get getTranslation => translation;
 
@@ -23,22 +28,34 @@ class MessageProvider with ChangeNotifier {
     return responses;
   }
 
-  // 添加用户消息的函数
-  void addUserMessage({required String msg}) {
-    chatList.add(ChatModel(msg: msg, chatIndex: 0)); // 将用户消息添加到聊天列表中
-    notifyListeners(); // 通知监听器，有数据变化
-  }
-
   // 清空聊天内容的函数
   void clearChat() {
     chatList = [];
     notifyListeners(); // 通知监听器，有数据变化
   }
 
-  // 将来自API的响应添加到聊天列表中
+  void addUserMessage({required String msg}) {
+    chatList.add(ChatModel(msg: msg, chatIndex: 0));
+    _saveMessageToDatabase(msg, true);
+    notifyListeners();
+  }
+
   void addApiResponsesToChatList(List<String> responses) {
     for (var response in responses) {
-      chatList.add(ChatModel(msg: response, chatIndex: 1)); // 将响应添加到聊天列表中
+      chatList.add(ChatModel(msg: response, chatIndex: 1));
+      _saveMessageToDatabase(response, false);
+    }
+  }
+
+  void _saveMessageToDatabase(String content, bool isUserMessage) async {
+    int? currentConversationId = _conversationProvider.getCurrentConversationId();
+    if (currentConversationId != null) {
+      Message message = Message(
+        conversationId: currentConversationId,
+        content: content,
+        isUserMessage: isUserMessage,
+      );
+      await DatabaseService.instance.insertMessage(message);
     }
   }
 

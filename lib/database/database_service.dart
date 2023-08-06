@@ -1,3 +1,4 @@
+import 'package:chatgpt_course/database/message_model.dart';
 import 'package:chatgpt_course/database/user_model.dart';
 import 'package:chatgpt_course/database/word_model.dart';
 import 'package:chatgpt_course/database/wordbook_model.dart';
@@ -115,7 +116,7 @@ class DatabaseService {
 
 // Create message table
     await db.execute('''
-  CREATE TABLE $messageTable (
+   CREATE TABLE $messageTable (
     $messageIdColumn INTEGER PRIMARY KEY AUTOINCREMENT,
     $messageConversationIdColumn INTEGER,
     $messageContentColumn TEXT NOT NULL,
@@ -297,5 +298,14 @@ class DatabaseService {
     for (var row in results) {
       print(row);
     }
+  }
+
+  Future<int> insertMessage(Message message) async {
+    Database db = await instance.database;
+    var map = message.toMap();
+    map[messageIsUserMessageColumn] = message.isUserMessage ? 1 : 0;
+    int id = await db.insert(messageTable, map);
+    await printAllRows(messageTable);
+    return id;
   }
 }

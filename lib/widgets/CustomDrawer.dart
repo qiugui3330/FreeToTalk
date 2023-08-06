@@ -23,10 +23,13 @@ class CustomDrawer extends StatelessWidget {
       date: DateTime.now().toString(),
       parameters: parameters,
     );
-    await DatabaseService.instance.insertConversation(conversation);
+
+    // 捕获insertConversation返回的id
+    int id = await DatabaseService.instance.insertConversation(conversation);
 
     // 获取ConversationProvider并设置当前对话
-    Provider.of<ConversationProvider>(context, listen: false).setCurrentConversation(conversation);
+    var conversationProvider = Provider.of<ConversationProvider>(context, listen: false);
+    conversationProvider.setCurrentConversation(conversation,id);
   }
 
   // 显示角色扮演对话框表单

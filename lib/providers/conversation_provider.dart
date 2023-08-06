@@ -4,14 +4,20 @@ import '../database/conversation_model.dart';
 
 class ConversationProvider with ChangeNotifier {
   Conversation? _currentConversation;
+  int? _currentConversationId;
 
-  void setCurrentConversation(Conversation conversation) {
+  void setCurrentConversation(Conversation conversation, int id) {
     _currentConversation = conversation;
+    _currentConversationId = id;
     notifyListeners();
   }
 
   Conversation? getCurrentConversation() {
     return _currentConversation;
+  }
+
+  int? getCurrentConversationId() {
+    return _currentConversationId;
   }
 
   String? getCurrentModelName() {

@@ -14,10 +14,12 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => MessageProvider(),
+          create: (context) => ConversationProvider(),
         ),
         ChangeNotifierProvider(
-          create: (_) => ConversationProvider(),
+          create: (context) => MessageProvider(
+            Provider.of<ConversationProvider>(context, listen: false),
+          ),
         ),
         Provider(
           create: (_) => AuthenticationService(),
