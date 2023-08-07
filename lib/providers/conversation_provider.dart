@@ -36,6 +36,8 @@ class ConversationProvider with ChangeNotifier {
 
   void clearCurrentConversation() {
     _currentConversation = null;
+    _currentConversationId = null;
     notifyListeners();
   }
 }
+

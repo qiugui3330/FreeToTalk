@@ -294,9 +294,9 @@ class DatabaseService {
   Future<void> printAllRows(String tableName) async {
     Database db = await instance.database;
     List<Map<String, dynamic>> results = await db.query(tableName);
-    print('All rows in the $tableName:');
+    //print('All rows in the $tableName:');
     for (var row in results) {
-      print(row);
+     // print(row);
     }
   }
 
@@ -307,5 +307,14 @@ class DatabaseService {
     int id = await db.insert(messageTable, map);
     await printAllRows(messageTable);
     return id;
+  }
+
+  Future<List<Map<String, dynamic>>> getMessagesByConversationId(int conversationId) async {
+    Database db = await database;
+    return await db.query(
+      messageTable,
+      where: '$messageConversationIdColumn = ?',
+      whereArgs: [conversationId],
+    );
   }
 }

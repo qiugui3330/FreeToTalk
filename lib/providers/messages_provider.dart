@@ -10,15 +10,65 @@ class MessageProvider with ChangeNotifier {
   List<ChatModel> chatList = []; // 存储聊天内容的列表
   String translation = ''; // 存储翻译结果的字符串
   final ConversationProvider _conversationProvider;
+  final DatabaseService _dbService = DatabaseService.instance;
 
   MessageProvider(this._conversationProvider);
   // 获取翻译结果的函数
   String get getTranslation => translation;
-  BuildContext? _currentContext;
+
+  Future<List<Message>> getConversationMessages(int conversationId) async {
+    List<Map<String, dynamic>> rawMessages = await _dbService.getMessagesByConversationId(conversationId);
+    return rawMessages.map((rawMessage) => Message.fromMap(rawMessage)).toList();
+  }
+
+  String formatMessagesForGPT(List<Message> messages) {
+    return messages.map((message) {
+      String sender = message.isUserMessage ? "User" : "Assistant";
+      return "$sender: ${message.content}\n";
+    }).join();
+  }
+
+  String trimMessagesToTokenLimit(String formattedMessages, int tokenLimit) {
+    while (formattedMessages.length > tokenLimit) {
+      int firstNewLine = formattedMessages.indexOf('\n');
+      if (firstNewLine != -1) {
+        formattedMessages = formattedMessages.substring(firstNewLine + 1);
+      } else {
+        break;
+      }
+    }
+    return formattedMessages;
+  }
+
+  Future<String> preparePromptForGPT(String userInput, int? currentConversation) async {
+    if (currentConversation == null) {
+      return userInput;
+    }
+
+    List<Message> conversationMessages = await getConversationMessages(currentConversation);
+    String instruction = conversationMessages[0].content;
+    List<Message> historyMessages = conversationMessages.sublist(1);
+    String formattedHistory = formatMessagesForGPT(historyMessages);
+
+    String prompt = """
+“$userInput”
+The above is the message sent to you by the user. Please respond to the above content based on the following instructions and conversation history. Do not include the speaker's name or colons in your response:
+Instructions: “$instruction”
+Conversation History:
+$formattedHistory
+""";
+
+    // Ensure the prompt does not exceed the token limit
+    prompt = trimMessagesToTokenLimit(prompt, 4096);
+
+    return prompt;
+  }
+
   // 获取聊天内容的函数
   List<ChatModel> get getChatList {
     return chatList;
   }
+
 
   // 封装了请求 API 和处理回复的私有方法
   Future<List<String>> _sendRequestAndGetResponse({required String msg}) async {
@@ -61,7 +111,14 @@ class MessageProvider with ChangeNotifier {
 
   // 发送消息并获取回复的函数
   Future<void> sendMessageAndGetAnswers({required String msg}) async {
-    List<String> responses = await _sendRequestAndGetResponse(msg: msg);
+    // 准备发送给GPT的提示，考虑当前对话的上下文
+    int? currentConversationId = _conversationProvider.getCurrentConversationId();
+    String prompt = await preparePromptForGPT(msg, currentConversationId);
+
+    // 使用已有的方法发送提示给GPT并获取回复
+    List<String> responses = await _sendRequestAndGetResponse(msg: prompt);
+
+    // 使用已有的方法将GPT的回复添加到聊天列表和数据库
     addApiResponsesToChatList(responses);
     notifyListeners();
   }
@@ -97,16 +154,17 @@ class MessageProvider with ChangeNotifier {
       if (data != null) {
         command = getCommandForMode2(data);
       } else {
-        throw ArgumentError("Missing data for roleplay dialogue");
+        throw ArgumentError('Missing data for roleplay dialogue');
       }
     } else if (id == 3) {
       if (data != null && data.isNotEmpty) {
         command = getCommandForMode3(data);
       } else {
-        throw ArgumentError("Missing data for custom dialogue");
+        throw ArgumentError('Missing data for custom dialogue');
       }
     }
-    await this.sendMessageAndGetAnswers(msg: command);
+    _saveMessageToDatabase(command, false);
+    await sendMessageAndGetAnswers(msg: command);
   }
 
   String getCommandForFreeTalk() {
@@ -131,4 +189,3 @@ class MessageProvider with ChangeNotifier {
 
   }
 }
-

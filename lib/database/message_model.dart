@@ -16,4 +16,12 @@ class Message {
       'isUserMessage': isUserMessage ? 1 : 0,
     };
   }
+
+  static Message fromMap(Map<String, dynamic> map) {
+    return Message(
+      conversationId: map['conversationId'],
+      content: map['content'],
+      isUserMessage: map['isUserMessage'] == 1,
+    );
+  }
 }
