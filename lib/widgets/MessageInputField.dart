@@ -7,16 +7,14 @@ import 'SendButton.dart';
 
 // MessageInputField 是一个 StatelessWidget，这是一个输入框组件，
 // 它包含了一些用于输入和发送信息的 UI 元素
-class MessageInputField extends StatelessWidget {
-  // 下面是几个传入此组件的参数
-  final TextEditingController textEditingController; // 文本输入框的控制器
-  final FocusNode focusNode;  // 用于管理此文本框焦点的焦点节点
-  final Function(String) onSubmitted;  // 在文本提交（按下回车）时的回调函数
-  final MessageProvider chatProvider;  // 聊天的消息提供器
-  final Function scrollListToEND;  // 滚动聊天列表到最后的函数
-  final Function sendMessageFCT;  // 发送消息的函数
+class MessageInputField extends StatefulWidget {
+  final TextEditingController textEditingController;
+  final FocusNode focusNode;
+  final Function(String) onSubmitted;
+  final MessageProvider chatProvider;
+  final Function scrollListToEND;
+  final Function sendMessageFCT;
 
-  // 这是构造函数，用于初始化此组件的各个参数
   const MessageInputField({
     Key? key,
     required this.textEditingController,
@@ -27,55 +25,106 @@ class MessageInputField extends StatelessWidget {
     required this.sendMessageFCT,
   }) : super(key: key);
 
-  // build 方法用于构建此组件的 UI
+  @override
+  _MessageInputFieldState createState() => _MessageInputFieldState();
+}
+
+class _MessageInputFieldState extends State<MessageInputField> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _animation = Tween<double>(begin: 0, end: 0.5).animate(_animationController);
+  }
+
   @override
   Widget build(BuildContext context) {
-    // 返回一个包含了内边距、装饰（包括颜色、边框等）和子组件的容器组件
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20), // 外边距
-      padding: EdgeInsets.all(16), // 内边距
-      decoration: BoxDecoration(
-        color: Color(0xFFf4f3f6),
-        border: Border.all(color: Colors.black87, width: 1.5),// 边框颜色和宽度
-        borderRadius: BorderRadius.all(
-          Radius.circular(20.0), // 边框圆角
+    return Stack(
+      children: [
+        // 新增的区域
+        Container(
+          height: MediaQuery.of(context).size.height * 0.125, // 设置明确的高度
+          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+          decoration: BoxDecoration(
+            color: Color(0xFFf4f3f6),
+            border: Border.all(color: Colors.black87, width: 1.5),
+            borderRadius: BorderRadius.all(Radius.circular(20.0)),
+          ),
+          // 这里可以添加您想要显示的内容
         ),
-      ),
-      child: Material(
-        color: cardColor, // 子组件背景色
-        child: Padding(
-          padding: const EdgeInsets.all(5.0), // 子组件的内边距
-          child: Row( // 横向排列子组件的 Row 组件
-            children: [
-              Icon(LineAwesomeIcons.smiling_face), // 表情图标
-              SizedBox(
-                width: 10,
-              ),
-              Expanded(
-                child: TextField( // 文本输入框
-                  focusNode: focusNode,
-                  style: const TextStyle(color: Colors.black87),
-                  controller: textEditingController,
-                  onSubmitted: onSubmitted,
-                  decoration: const InputDecoration.collapsed(
-                    hintText: "Let's go!", // 提示文字
-                    hintStyle: TextStyle(
-                      color: Color.fromARGB(255, 97, 97, 97),
+        AnimatedBuilder(
+          animation: _animationController,
+          builder: (context, child) {
+            return Transform.translate(
+              offset: Offset(0, -_animation.value * MediaQuery.of(context).size.height * 0.125),
+              child: child,
+            );
+          },
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Color(0xFFf4f3f6),
+              border: Border.all(color: Colors.black87, width: 1.5),
+              borderRadius: BorderRadius.all(Radius.circular(20.0)),
+            ),
+            child: Material(
+              color: cardColor,
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(LineAwesomeIcons.smiling_face),
+                      onPressed: () {
+                        if (_animationController.isCompleted) {
+                          _animationController.reverse();
+                        } else {
+                          _animationController.forward();
+                        }
+                      },
                     ),
-                  ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: TextField(
+                        focusNode: widget.focusNode,
+                        style: const TextStyle(color: Colors.black87),
+                        controller: widget.textEditingController,
+                        onSubmitted: widget.onSubmitted,
+                        decoration: const InputDecoration.collapsed(
+                          hintText: "Let's go!",
+                          hintStyle: TextStyle(
+                            color: Color.fromARGB(255, 97, 97, 97),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SendButton(
+                      focusNode: widget.focusNode,
+                      textEditingController: widget.textEditingController,
+                      scrollListToEND: widget.scrollListToEND,
+                      sendMessageFCT: widget.sendMessageFCT,
+                      chatProvider: widget.chatProvider,
+                    ),
+                  ],
                 ),
               ),
-              SendButton( // 发送按钮
-                focusNode: focusNode,
-                textEditingController: textEditingController,
-                scrollListToEND: scrollListToEND,
-                sendMessageFCT: sendMessageFCT,
-                chatProvider: chatProvider,
-              ),
-            ],
+            ),
           ),
         ),
-      ),
+      ],
     );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 }

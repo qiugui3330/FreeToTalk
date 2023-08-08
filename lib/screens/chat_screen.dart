@@ -142,39 +142,38 @@ class _ChatScreenState extends State<ChatScreen> {
         ],
       ),
       drawer: CustomDrawer(user: widget.user),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Flexible(
-              child: ChatMessageList(
+        body: SafeArea(
+          child: Stack(
+            children: [
+              ChatMessageList(
                 chatList: chatProvider.getChatList,
                 listScrollController: _listScrollController,
               ),
-            ),
-            if (_isTyping)
-              ...[
-                const SpinKitThreeBounce(
-                  color: Colors.black87,
-                  size: 18,
+              if (_isTyping)
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: const SpinKitThreeBounce(
+                    color: Colors.black87,
+                    size: 18,
+                  ),
                 ),
-              ],
-            const SizedBox(
-              height: 15,
-            ),
-            MessageInputField(
-              focusNode: focusNode,
-              textEditingController: textEditingController,
-              onSubmitted: (String value) {
-                sendMessageFCT(chatProvider: chatProvider);
-                scrollListToEND();
-              },
-              chatProvider: chatProvider,
-              scrollListToEND: scrollListToEND,
-              sendMessageFCT: sendMessageFCT,
-            ),
-          ],
-        ),
-      ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: MessageInputField(
+                  focusNode: focusNode,
+                  textEditingController: textEditingController,
+                  onSubmitted: (String value) {
+                    sendMessageFCT(chatProvider: chatProvider);
+                    scrollListToEND();
+                  },
+                  chatProvider: chatProvider,
+                  scrollListToEND: scrollListToEND,
+                  sendMessageFCT: sendMessageFCT,
+                ),
+              ),
+            ],
+          ),
+        )
     );
   }
 
