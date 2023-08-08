@@ -4,7 +4,7 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import '../constants/constants.dart';
 import '../providers/messages_provider.dart';
 import 'SendButton.dart';
-import 'GuideField.dart';  // 引入新的GuideField类
+import 'GuideField.dart';
 
 class MessageInputField extends StatefulWidget {
   final TextEditingController textEditingController;
@@ -28,7 +28,8 @@ class MessageInputField extends StatefulWidget {
   _MessageInputFieldState createState() => _MessageInputFieldState();
 }
 
-class _MessageInputFieldState extends State<MessageInputField> with SingleTickerProviderStateMixin {
+class _MessageInputFieldState extends State<MessageInputField>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
 
@@ -39,7 +40,8 @@ class _MessageInputFieldState extends State<MessageInputField> with SingleTicker
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-    _animation = Tween<double>(begin: 0, end: 0.5).animate(_animationController);
+    _animation =
+        Tween<double>(begin: 0, end: 0.5).animate(_animationController);
   }
 
   @override
@@ -54,12 +56,16 @@ class _MessageInputFieldState extends State<MessageInputField> with SingleTicker
       },
       child: Stack(
         children: [
-          GuideField(),  // 使用新的GuideField类
+          GuideField(),
           AnimatedBuilder(
             animation: _animationController,
             builder: (context, child) {
               return Transform.translate(
-                offset: Offset(0, -_animation.value * MediaQuery.of(context).size.height * 0.16),
+                offset: Offset(
+                    0,
+                    -_animation.value *
+                        MediaQuery.of(context).size.height *
+                        0.16),
                 child: child,
               );
             },

@@ -7,33 +7,33 @@ import 'package:chatgpt_course/widgets/CustomTextField.dart';
 
 import '../database/user_model.dart';
 
-// Defining a stateless widget for the login page
+ 
 class LoginPage extends StatelessWidget {
-  // Initializing controllers for email and password text fields
+ 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  // Initializing an instance of the authentication service
+ 
   final authService = AuthenticationService();
 
-  // Building the widget
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Defining the app bar
+ 
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
-      // Defining the body of the scaffold
+ 
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Displaying the login text
+ 
               Text(
                 'Login',
                 style: TextStyle(
@@ -42,14 +42,14 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20),
-              // Creating a custom text field for email input
+ 
               CustomTextField(
                 controller: emailController,
                 labelText: 'Email',
                 hintText: 'Enter your email',
               ),
               SizedBox(height: 20),
-              // Creating a custom text field for password input
+ 
               CustomTextField(
                 controller: passwordController,
                 labelText: 'Password',
@@ -57,7 +57,7 @@ class LoginPage extends StatelessWidget {
                 obscureText: true,
               ),
               SizedBox(height: 20),
-              // Creating a login button
+ 
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   primary: Theme.of(context).primaryColor,
@@ -69,19 +69,19 @@ class LoginPage extends StatelessWidget {
                 child: Text('Login', style: TextStyle(fontSize: 20)),
                 onPressed: () async {
                   try {
-                    // Attempting to login the user
+ 
                     User? user = await authService.login(
                         emailController.text, passwordController.text);
 
                     if (user != null) {
-                      // If login is successful, navigate to the chat screen
-                      Navigator.of(context).pushReplacement(    // Change push to pushReplacement
+ 
+                      Navigator.of(context).pushReplacement( 
                         MaterialPageRoute(
                           builder: (context) => ChatScreen(user: user),
                         ),
                       );
                     } else {
-                      // If login fails, show an error message
+ 
                       showDialog(
                         context: context,
                         builder: (context) {
@@ -101,7 +101,7 @@ class LoginPage extends StatelessWidget {
                       );
                     }
                   } catch (e) {
-                    // If an exception is thrown, show an error message
+ 
                     showDialog(
                       context: context,
                       builder: (context) {
@@ -123,7 +123,7 @@ class LoginPage extends StatelessWidget {
                 },
               ),
               SizedBox(height: 20),
-              // Providing a link to the registration page
+ 
               GestureDetector(
                 child: Text(
                   'Don\'t have an account? Register',
@@ -133,7 +133,7 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  // Navigate to the registration page when the text is tapped
+ 
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => RegisterPage()),

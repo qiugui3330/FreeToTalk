@@ -124,16 +124,21 @@ $formattedHistory
   }
 
   // 获取并显示翻译的函数
-  Future<void> getTranslationAndDisplay(String word, String fullSentence) async {
+  Future<void> getTranslationResult(String word, String fullSentence) async {
+    String prompt = "\"$word\" 在 \"$fullSentence\" 中是什么意思？请用中文回答，只给出 \"$word\" 在这句中表达的意思。";
+    getPromptAndDisplay(prompt);
+  }
+
+  Future<void> getPromptAndDisplay(String prompt) async {
     translation = 'Querying...';
     notifyListeners();
-    String prompt = "\"$word\" 在 \"$fullSentence\" 中是什么意思？请用中文回答，只给出 \"$word\" 在这句中表达的意思。";
     String response = await ApiService.generatePrompt(prompt: prompt);
     if (response.isNotEmpty) {
       translation = response;
     }
     notifyListeners();
   }
+
 
   // 设置翻译结果的函数
   void setTranslation(String s) {

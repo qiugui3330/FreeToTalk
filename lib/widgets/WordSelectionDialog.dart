@@ -78,7 +78,7 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
     _lastTranslationQuery = translationQuery;
     _lastFullQuery = fullQuery;
 
-    provider.getTranslationAndDisplay(translationQuery, fullQuery);
+    provider.getTranslationResult(translationQuery, fullQuery);
   }
 
   void _toggleWordSelection(int index, List<String> words) {
@@ -286,7 +286,7 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                                   elevation: 0,
                                   onPressed: () {
                                     if (_lastTranslationQuery != null && _lastFullQuery != null) {
-                                      provider.getTranslationAndDisplay(_lastTranslationQuery!, _lastFullQuery!);
+                                      provider.getTranslationResult(_lastTranslationQuery!, _lastFullQuery!);
                                     }
                                   },
                                   child: Icon(Icons.refresh, size: 20),

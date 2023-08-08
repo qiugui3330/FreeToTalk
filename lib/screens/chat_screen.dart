@@ -143,20 +143,28 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       drawer: CustomDrawer(user: widget.user),
         body: SafeArea(
-          child: Stack(
+          child: Column(
             children: [
-              ChatMessageList(
-                chatList: chatProvider.getChatList,
-                listScrollController: _listScrollController,
-              ),
-              if (_isTyping)
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: const SpinKitThreeBounce(
-                    color: Colors.black87,
-                    size: 18,
-                  ),
+              // 这部分是为了确保ChatMessageList只占用除MessageInputField之外的空间
+              Expanded(
+                child: Stack(
+                  children: [
+                    ChatMessageList(
+                      chatList: chatProvider.getChatList,
+                      listScrollController: _listScrollController,
+                    ),
+                    if (_isTyping)
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: const SpinKitThreeBounce(
+                          color: Colors.black87,
+                          size: 18,
+                        ),
+                      ),
+                  ],
                 ),
+              ),
+              // 这部分是MessageInputField
               Align(
                 alignment: Alignment.bottomCenter,
                 child: MessageInputField(
@@ -174,6 +182,7 @@ class _ChatScreenState extends State<ChatScreen> {
             ],
           ),
         )
+
     );
   }
 

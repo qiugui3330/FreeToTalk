@@ -62,98 +62,106 @@ class _ChatWidgetState extends State<ChatWidget> {
     return Material(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: EdgeInsets.all(10),
-              margin: EdgeInsets.only(top: 10, left: 20),
-              height: 50,
-              width: 50,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.white, width: 1.5),
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                      color: Color.fromARGB(255, 72, 69, 69).withOpacity(0.3),
-                      blurRadius: 1.0,
-                      spreadRadius: 2.0),
-                ],
-                image: DecorationImage(
-                  image: AssetImage(
-                    widget.chatIndex == 0 ? AssetsManager.userImage : AssetsManager.botImage,
+        child: Container(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start, // 保持头像和按钮靠上
+            children: [
+              Container(
+                padding: EdgeInsets.all(10),
+                margin: EdgeInsets.only(top: 10, left: 20),
+                height: 50,
+                width: 50,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white, width: 1.5),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Color.fromARGB(255, 72, 69, 69).withOpacity(0.3),
+                        blurRadius: 1.0,
+                        spreadRadius: 2.0),
+                  ],
+                  image: DecorationImage(
+                    image: AssetImage(
+                      widget.chatIndex == 0 ? AssetsManager.userImage : AssetsManager.botImage,
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(
-              width: 8,
-            ),
-            Expanded(
-              child: GestureDetector(
-                onLongPress: () {
-                  _showWordSelectionDialog(widget.msg);
-                },
-                child: widget.chatIndex == 0
-                    ? TextWidget(
-                  label: widget.msg,
-                )
-                    : _isTextVisible
-                    ? Text(
-                  widget.msg.trim(),
-                  style: TextStyle(
-                      color: Colors.black87,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16),
-                )
-                    : Text(
-                  "Text is hidden",
-                  style: TextStyle(
-                      color: Colors.black87,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16),
+              const SizedBox(
+                width: 8,
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onLongPress: () {
+                    _showWordSelectionDialog(widget.msg);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 8.0), // 使文本垂直居中
+                    child: widget.chatIndex == 0
+                        ? TextWidget(
+                      label: widget.msg,
+                    )
+                        : _isTextVisible
+                        ? Text(
+                      widget.msg.trim(),
+                      style: TextStyle(
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16),
+                    )
+                        : Text(
+                      "Text is hidden",
+                      style: TextStyle(
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16),
+                    ),
+                  ),
                 ),
               ),
-            ),
-            if (widget.chatIndex == 0)
-              IconButton(
-                icon: Icon(Icons.play_arrow),
-                onPressed: () async {
-                  await _ttsService.speak(widget.msg); // 使用 TtsService 的 speak 方法
-                },
-              )
-            else
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.remove_red_eye),
-                      color: Colors.black87,
-                      onPressed: () {
-                        setState(() {
-                          _isTextVisible = !_isTextVisible;
-                        });
-                      },
-                    ),
-                    SizedBox(
-                      width: 4,
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.play_arrow),
-                      onPressed: () async {
-                        await _ttsService.speak(widget.msg); // 使用 TtsService 的 speak 方法
-                      },
-                    ),
-                  ],
-                ),
-              )
-          ],
+              if (widget.chatIndex == 0)
+                IconButton(
+                  icon: Icon(Icons.play_arrow),
+                  onPressed: () async {
+                    await _ttsService.speak(widget.msg); // 使用 TtsService 的 speak 方法
+                  },
+                )
+              else
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.remove_red_eye),
+                        color: Colors.black87,
+                        onPressed: () {
+                          setState(() {
+                            _isTextVisible = !_isTextVisible;
+                          });
+                        },
+                      ),
+                      SizedBox(
+                        width: 4,
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.play_arrow),
+                        onPressed: () async {
+                          await _ttsService.speak(widget.msg); // 使用 TtsService 的 speak 方法
+                        },
+                      ),
+                    ],
+                  ),
+                )
+            ],
+          ),
         ),
       ),
     );
   }
+
+
+
 }
