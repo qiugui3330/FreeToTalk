@@ -160,7 +160,7 @@ class DatabaseService {
   Future<int> queryUserCount() async {
     Database db = await instance.database;
     return Sqflite.firstIntValue(
-            await db.rawQuery('SELECT COUNT(*) FROM $userTable')) ??
+        await db.rawQuery('SELECT COUNT(*) FROM $userTable')) ??
         0;
   }
 
@@ -254,7 +254,9 @@ class DatabaseService {
     DateTime now = DateTime.now();
     for (var word in allWords) {
       DateTime addDate = DateTime.parse(word[wordAddDateColumn]);
-      int daysAgo = now.difference(addDate).inDays;
+      int daysAgo = now
+          .difference(addDate)
+          .inDays;
 
       if (daysAgoList.contains(daysAgo)) {
         words.add(word[wordWordColumn]);
@@ -294,9 +296,9 @@ class DatabaseService {
   Future<void> printAllRows(String tableName) async {
     Database db = await instance.database;
     List<Map<String, dynamic>> results = await db.query(tableName);
-    //print('All rows in the $tableName:');
+    print('All rows in the $tableName:');
     for (var row in results) {
-     // print(row);
+      print(row);
     }
   }
 
@@ -309,12 +311,18 @@ class DatabaseService {
     return id;
   }
 
-  Future<List<Map<String, dynamic>>> getMessagesByConversationId(int conversationId) async {
+  Future<List<Map<String, dynamic>>> getMessagesByConversationId(
+      int conversationId) async {
     Database db = await database;
     return await db.query(
       messageTable,
       where: '$messageConversationIdColumn = ?',
       whereArgs: [conversationId],
     );
+  }
+
+  Future<List<Map<String, dynamic>>> getAllWordsSortedByDate() async {
+    Database db = await instance.database;
+    return await db.query(wordTable, orderBy: '$wordAddDateColumn DESC');
   }
 }

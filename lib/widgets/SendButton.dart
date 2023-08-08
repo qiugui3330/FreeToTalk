@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:chatgpt_course/providers/messages_provider.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class SendButton extends StatefulWidget {
@@ -72,12 +73,31 @@ class _SendButtonState extends State<SendButton> {
     return GestureDetector(
       onLongPress: _startListening,
       onLongPressEnd: (details) => _stopListening(),
-      child: IconButton(
-        onPressed: sendMessageWrapper,
-        icon: const Icon(
-          Icons.send,
-          size: 30.0,
-          color: Colors.green,
+      child: Container(
+        padding: EdgeInsets.all(5),
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Color.fromARGB(255, 64, 63, 63),
+            width: 1.5,
+          ),
+          borderRadius: BorderRadius.circular(30),
+          color: Colors.white,
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: IconButton(
+                onPressed: sendMessageWrapper,
+                icon: const Icon(
+                  LineAwesomeIcons.telegram_plane,
+                  color: Color.fromARGB(221, 206, 125, 3),
+                  size: 30,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -4,6 +4,7 @@ import '../database/conversation_model.dart';
 import '../database/database_service.dart';
 import '../providers/messages_provider.dart';
 import '../providers/conversation_provider.dart';
+import '../screens/wordbook_page.dart';
 import '../services/assets_manager.dart';
 import '../auth/login_page.dart';
 import '../database/user_model.dart';
@@ -196,9 +197,13 @@ class CustomDrawer extends StatelessWidget {
           ListTile(
             title: Text('Word book'),
             onTap: () {
-              // Put your onTap function here
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => WordBookPage()),
+              );
             },
           ),
+
           ListTile(
             title: Text('Logout'),
             onTap: () {

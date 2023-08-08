@@ -35,8 +35,8 @@ class MessageInputField extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20), // 外边距
       padding: EdgeInsets.all(16), // 内边距
       decoration: BoxDecoration(
-        color: Colors.grey[200], // 背景色
-        border: Border.all(color: Colors.black87, width: 1.5), // 边框颜色和宽度
+        color: Color(0xFFf4f3f6),
+        border: Border.all(color: Colors.black87, width: 1.5),// 边框颜色和宽度
         borderRadius: BorderRadius.all(
           Radius.circular(20.0), // 边框圆角
         ),
@@ -60,7 +60,7 @@ class MessageInputField extends StatelessWidget {
                   decoration: const InputDecoration.collapsed(
                     hintText: "Let's go!", // 提示文字
                     hintStyle: TextStyle(
-                      color: Colors.grey,
+                        color: Color.fromARGB(255, 97, 97, 97),
                     ),
                   ),
                 ),
