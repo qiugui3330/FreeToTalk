@@ -4,9 +4,8 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import '../constants/constants.dart';
 import '../providers/messages_provider.dart';
 import 'SendButton.dart';
+import 'GuideField.dart';  // 引入新的GuideField类
 
-// MessageInputField 是一个 StatelessWidget，这是一个输入框组件，
-// 它包含了一些用于输入和发送信息的 UI 元素
 class MessageInputField extends StatefulWidget {
   final TextEditingController textEditingController;
   final FocusNode focusNode;
@@ -45,80 +44,79 @@ class _MessageInputFieldState extends State<MessageInputField> with SingleTicker
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        // 新增的区域
-        Container(
-          height: MediaQuery.of(context).size.height * 0.125, // 设置明确的高度
-          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-          decoration: BoxDecoration(
-            color: Color(0xFFf4f3f6),
-            border: Border.all(color: Colors.black87, width: 1.5),
-            borderRadius: BorderRadius.all(Radius.circular(20.0)),
-          ),
-          // 这里可以添加您想要显示的内容
-        ),
-        AnimatedBuilder(
-          animation: _animationController,
-          builder: (context, child) {
-            return Transform.translate(
-              offset: Offset(0, -_animation.value * MediaQuery.of(context).size.height * 0.125),
-              child: child,
-            );
-          },
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-            padding: EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Color(0xFFf4f3f6),
-              border: Border.all(color: Colors.black87, width: 1.5),
-              borderRadius: BorderRadius.all(Radius.circular(20.0)),
-            ),
-            child: Material(
-              color: cardColor,
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(LineAwesomeIcons.smiling_face),
-                      onPressed: () {
-                        if (_animationController.isCompleted) {
-                          _animationController.reverse();
-                        } else {
-                          _animationController.forward();
-                        }
-                      },
-                    ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: TextField(
-                        focusNode: widget.focusNode,
-                        style: const TextStyle(color: Colors.black87),
-                        controller: widget.textEditingController,
-                        onSubmitted: widget.onSubmitted,
-                        decoration: const InputDecoration.collapsed(
-                          hintText: "Let's go!",
-                          hintStyle: TextStyle(
-                            color: Color.fromARGB(255, 97, 97, 97),
+    return GestureDetector(
+      onVerticalDragUpdate: (details) {
+        if (details.delta.dy < 0) {
+          _animationController.forward();
+        } else if (details.delta.dy > 0) {
+          _animationController.reverse();
+        }
+      },
+      child: Stack(
+        children: [
+          GuideField(),  // 使用新的GuideField类
+          AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, child) {
+              return Transform.translate(
+                offset: Offset(0, -_animation.value * MediaQuery.of(context).size.height * 0.16),
+                child: child,
+              );
+            },
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Color(0xFFf4f3f6),
+                border: Border.all(color: Colors.black87, width: 1.5),
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+              ),
+              child: Material(
+                color: cardColor,
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(LineAwesomeIcons.fly),
+                        onPressed: () {
+                          if (_animationController.isCompleted) {
+                            _animationController.reverse();
+                          } else {
+                            _animationController.forward();
+                          }
+                        },
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: TextField(
+                          focusNode: widget.focusNode,
+                          style: const TextStyle(color: Colors.black87),
+                          controller: widget.textEditingController,
+                          onSubmitted: widget.onSubmitted,
+                          decoration: const InputDecoration.collapsed(
+                            hintText: "Let's go!",
+                            hintStyle: TextStyle(
+                              color: Color.fromARGB(255, 97, 97, 97),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    SendButton(
-                      focusNode: widget.focusNode,
-                      textEditingController: widget.textEditingController,
-                      scrollListToEND: widget.scrollListToEND,
-                      sendMessageFCT: widget.sendMessageFCT,
-                      chatProvider: widget.chatProvider,
-                    ),
-                  ],
+                      SendButton(
+                        focusNode: widget.focusNode,
+                        textEditingController: widget.textEditingController,
+                        scrollListToEND: widget.scrollListToEND,
+                        sendMessageFCT: widget.sendMessageFCT,
+                        chatProvider: widget.chatProvider,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
