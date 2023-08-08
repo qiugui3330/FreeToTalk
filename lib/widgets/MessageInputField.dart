@@ -60,7 +60,7 @@ class MessageInputField extends StatelessWidget {
                   decoration: const InputDecoration.collapsed(
                     hintText: "Let's go!", // 提示文字
                     hintStyle: TextStyle(
-                        color: Color.fromARGB(255, 97, 97, 97),
+                      color: Color.fromARGB(255, 97, 97, 97),
                     ),
                   ),
                 ),

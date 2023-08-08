@@ -74,22 +74,21 @@ class _WordBookPageState extends State<WordBookPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  SizedBox(height: 5.0),
                                   if (word['word'] != null)
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(word['word']!, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
+                                        Text(word['word']!, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black)),
                                         IconButton(
-                                          icon: Icon(Icons.play_arrow, color: Colors.black),
+                                          icon: Icon(Icons.play_arrow, color: Colors.grey[400]),
                                           onPressed: () => _ttsService.speak(word['word']!),
                                         ),
                                       ],
                                     ),
-                                  SizedBox(height: 5.0),
+                                  SizedBox(height: 3.0),
                                   if (word['translation'] != null)
                                     Text(word['translation']!, style: TextStyle(fontSize: 16, color: Colors.black)),
-                                  SizedBox(height: 5.0),
+                                  SizedBox(height: 3.0),
                                   if (word['originalSentence'] != null)
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -98,7 +97,7 @@ class _WordBookPageState extends State<WordBookPage> {
                                           child: Text(word['originalSentence']!, style: TextStyle(fontSize: 16, color: Colors.black)),
                                         ),
                                         IconButton(
-                                          icon: Icon(Icons.play_arrow, color: Colors.black),
+                                          icon: Icon(Icons.play_arrow, color: Colors.grey[400]),
                                           onPressed: () => _ttsService.speak(word['originalSentence']!),
                                         ),
                                       ],
