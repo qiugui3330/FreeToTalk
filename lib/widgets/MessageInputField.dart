@@ -4,7 +4,7 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import '../constants/constants.dart';
 import '../providers/messages_provider.dart';
 import 'SendButton.dart';
-import 'GuideField.dart';
+import 'AdviceField.dart';
 
 class MessageInputField extends StatefulWidget {
   final TextEditingController textEditingController;
@@ -56,7 +56,7 @@ class _MessageInputFieldState extends State<MessageInputField>
       },
       child: Stack(
         children: [
-          GuideField(),
+          AdviceField(),
           AnimatedBuilder(
             animation: _animationController,
             builder: (context, child) {
