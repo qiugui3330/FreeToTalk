@@ -15,6 +15,7 @@ class MessageProvider with ChangeNotifier {
 
   String get getTranslation => translation;
 
+
   Future<List<Message>> getConversationMessages(int conversationId) async {
     List<Map<String, dynamic>> rawMessages =
         await _dbService.getMessagesByConversationId(conversationId);

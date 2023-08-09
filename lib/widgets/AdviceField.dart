@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/messages_provider.dart'; // 确保这是正确的导入路径
+import '../providers/messages_provider.dart';
+import 'WordSelectionDialog.dart'; // 确保这是正确的导入路径
 
 class AdviceField extends StatefulWidget {
   final double placeholderHeightFactor;
@@ -46,12 +47,28 @@ class AdviceFieldState extends State<AdviceField> {
                   child: Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Center(
-                      child: Text(
-                        chatProvider.getTranslation, // 这里我们直接从MessageProvider获取翻译
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16),
+                      child: GestureDetector( // 添加手势检测器
+                        onLongPress: () {
+                          // 显示WordSelectionDialog
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) => WordSelectionDialog(
+                              msg: chatProvider.getTranslation.trim().isEmpty
+                                  ? 'Free to ask!'
+                                  : chatProvider.getTranslation,
+                              parentContext: context,
+                            ),
+                          );
+                        },
+                        child: Text(
+                          chatProvider.getTranslation.trim().isEmpty
+                              ? 'Free to ask!'
+                              : chatProvider.getTranslation,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 16),
+                        ),
                       ),
                     ),
                   ),
@@ -67,3 +84,5 @@ class AdviceFieldState extends State<AdviceField> {
     context.read<MessageProvider>().setTranslation('Free to ask!');
   }
 }
+
+// ... [WordSelectionDialog 的代码]

@@ -50,7 +50,7 @@ class _MessageInputFieldState extends State<MessageInputField>
       _animationController.reverse();
       adviceFieldKey.currentState!.resetAdvice();
       if (resetText) {
-        widget.textEditingController.text = "Free to ask!";
+        //widget.textEditingController.text = "Free to ask!";
       }
     } else {
       _animationController.forward();
