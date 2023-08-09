@@ -32,6 +32,7 @@ class _MessageInputFieldState extends State<MessageInputField>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
+  final adviceFieldKey = GlobalKey<AdviceFieldState>();
 
   @override
   void initState() {
@@ -44,19 +45,42 @@ class _MessageInputFieldState extends State<MessageInputField>
         Tween<double>(begin: 0, end: 0.5).animate(_animationController);
   }
 
+  void _handleFlyButtonPress({bool resetText = false}) {
+    if (_animationController.isCompleted) {
+      _animationController.reverse();
+      adviceFieldKey.currentState!.resetAdvice();
+      if (resetText) {
+        widget.textEditingController.text = "Free to ask!";
+      }
+    } else {
+      _animationController.forward();
+      final mean = widget.textEditingController.text.isEmpty
+          ? null
+          : widget.textEditingController.text;
+      final sentence = widget.chatProvider.getChatList.isNotEmpty
+          ? widget.chatProvider.getChatList.last.msg
+          : null;
+
+      widget.chatProvider.getAdviceResult(mean, sentence).then((_) {
+        widget.chatProvider.setTranslation(widget.chatProvider.getTranslation);
+      });
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onVerticalDragUpdate: (details) {
         if (details.delta.dy < 0) {
-          _animationController.forward();
+          _handleFlyButtonPress();
         } else if (details.delta.dy > 0) {
-          _animationController.reverse();
+          _handleFlyButtonPress(resetText: true);
         }
       },
       child: Stack(
         children: [
-          AdviceField(),
+          AdviceField(key: adviceFieldKey),
           AnimatedBuilder(
             animation: _animationController,
             builder: (context, child) {
@@ -85,13 +109,7 @@ class _MessageInputFieldState extends State<MessageInputField>
                     children: [
                       IconButton(
                         icon: Icon(LineAwesomeIcons.fly),
-                        onPressed: () {
-                          if (_animationController.isCompleted) {
-                            _animationController.reverse();
-                          } else {
-                            _animationController.forward();
-                          }
-                        },
+                        onPressed: _handleFlyButtonPress,
                       ),
                       SizedBox(width: 10),
                       Expanded(
