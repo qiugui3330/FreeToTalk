@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-import '../database/conversation_model.dart';
+import '../database/models/conversation_model.dart';
 
 class ConversationProvider with ChangeNotifier {
   Conversation? _currentConversation;

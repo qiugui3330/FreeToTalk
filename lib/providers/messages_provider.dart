@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import '../database/database_service.dart';
-import '../database/message_model.dart';
+import '../database/models/message_model.dart';
 import '../models/chat_model.dart';
 import '../services/api_service.dart';
 import 'conversation_provider.dart';

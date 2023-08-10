@@ -6,7 +6,7 @@ import 'package:chatgpt_course/services/TtsService.dart';
 import 'dart:math';
 
 import '../database/database_service.dart';
-import '../database/word_model.dart';
+import '../database/models/word_model.dart';
 import '../providers/messages_provider.dart';
 
 class WordSelectionDialog extends StatefulWidget {

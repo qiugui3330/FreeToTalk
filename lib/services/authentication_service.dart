@@ -1,5 +1,5 @@
 import '../database/database_service.dart';
-import '../database/user_model.dart';
+import '../database/models/user_model.dart';
 
 class AuthenticationService {
   final dbHelper = DatabaseService.instance;

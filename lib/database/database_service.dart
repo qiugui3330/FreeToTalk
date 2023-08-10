@@ -1,11 +1,11 @@
-import 'package:chatgpt_course/database/message_model.dart';
-import 'package:chatgpt_course/database/user_model.dart';
-import 'package:chatgpt_course/database/word_model.dart';
-import 'package:chatgpt_course/database/wordbook_model.dart';
+import 'package:chatgpt_course/database/models/message_model.dart';
+import 'package:chatgpt_course/database/models/user_model.dart';
+import 'package:chatgpt_course/database/models/word_model.dart';
+import 'package:chatgpt_course/database/models/wordbook_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-import 'conversation_model.dart';
+import 'models/conversation_model.dart';
 
 class DatabaseService {
   static final _databaseName = "my_database.db";

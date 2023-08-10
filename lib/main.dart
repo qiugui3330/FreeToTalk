@@ -7,7 +7,7 @@ import 'constants/constants.dart';
 import 'providers/messages_provider.dart';
 import 'auth/login_page.dart';
 import 'screens/chat_screen.dart';
-import 'database/user_model.dart';
+import 'database/models/user_model.dart';
 
 void main() {
   runApp(

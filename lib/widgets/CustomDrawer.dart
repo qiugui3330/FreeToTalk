@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../database/conversation_model.dart';
+import '../database/models/conversation_model.dart';
 import '../database/database_service.dart';
 import '../providers/messages_provider.dart';
 import '../providers/conversation_provider.dart';
-import '../screens/wordbook_page.dart';
+import '../screens/wordbook_screen.dart';
 import '../services/assets_manager.dart';
 import '../auth/login_page.dart';
-import '../database/user_model.dart';
+import '../database/models/user_model.dart';
 import 'CustomTextField.dart';
 
 // 自定义抽屉组件

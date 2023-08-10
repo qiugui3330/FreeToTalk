@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../database/user_model.dart';
+import '../database/models/user_model.dart';
 
 class TextWidget extends StatelessWidget {
 
