@@ -10,12 +10,12 @@ import '../auth/login_page.dart';
 import '../database/models/user_model.dart';
 import 'CustomTextField.dart';
 
-// 自定义抽屉组件
+   
 class CustomDrawer extends StatelessWidget {
   final User user;
 
   const CustomDrawer({Key? key, required this.user}) : super(key: key);
-  // 创建对话
+   
   Future<void> createConversation(BuildContext context, int type, List<String>? parameters) async {
     Provider.of<MessageProvider>(context, listen: false).clearChat();
     var conversation = Conversation(
@@ -25,22 +25,22 @@ class CustomDrawer extends StatelessWidget {
       parameters: parameters,
     );
 
-    // 捕获insertConversation返回的id
+   
     int id = await DatabaseService.instance.insertConversation(conversation);
 
-    // 获取ConversationProvider并设置当前对话
+   
     var conversationProvider = Provider.of<ConversationProvider>(context, listen: false);
     conversationProvider.setCurrentConversation(conversation,id);
   }
 
-  // 显示角色扮演对话框表单
+   
   Future<Map<String, String>?> showRoleplayDialogueForm(BuildContext context) {
     TextEditingController userRoleController = TextEditingController();
     TextEditingController aiRoleController = TextEditingController();
     TextEditingController locationController = TextEditingController();
     TextEditingController timeController = TextEditingController();
     TextEditingController otherInfoController = TextEditingController();
-    // 创建AlertDialog供用户输入各类信息
+   
     return showDialog<Map<String, String>>(
       context: context,
       builder: (BuildContext context) {
@@ -109,7 +109,7 @@ class CustomDrawer extends StatelessWidget {
                     locationController.text.isEmpty &&
                     timeController.text.isEmpty &&
                     otherInfoController.text.isEmpty) {
-                  // All fields are empty, show an error message.
+   
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text('Please fill in at least one field'),
                     duration: Duration(seconds: 2),
@@ -143,12 +143,12 @@ class CustomDrawer extends StatelessWidget {
               style: TextStyle(color: Colors.black),
             ),
             accountEmail: Text(
-              user.email, // Change this line with your variable
+              user.email,   
               style: TextStyle(color: Colors.black),
             ),
             currentAccountPicture: CircleAvatar(
               backgroundImage: AssetImage(AssetsManager
-                  .openaiLogo), // Change this line with your variable
+                  .openaiLogo),   
             ),
             decoration: BoxDecoration(
               color: Color.fromRGBO(244, 243, 246, 1),
@@ -157,7 +157,7 @@ class CustomDrawer extends StatelessWidget {
           ListTile(
             title: Text('Free Talk'),
             onTap: () {
-              Navigator.of(context).pop();  // close drawer
+              Navigator.of(context).pop();   
               handleListTileTap(context, 1, null, null);
             },
           ),
@@ -165,7 +165,7 @@ class CustomDrawer extends StatelessWidget {
           ListTile(
             title: Text('Roleplay Dialogue'),
             onTap: () async {
-              BuildContext currentContext = context; // Save the context before showing the dialog
+              BuildContext currentContext = context;   
               Map<String, String>? data = await showRoleplayDialogueForm(context);
               if (data != null) {
                 List<String> parameters = [
@@ -175,7 +175,7 @@ class CustomDrawer extends StatelessWidget {
                   data['time']!,
                   data['otherInfo']!
                 ];
-                await handleListTileTap(currentContext!, 2, data, parameters); // Use the saved context
+                await handleListTileTap(currentContext!, 2, data, parameters);   
               }
             },
           ),

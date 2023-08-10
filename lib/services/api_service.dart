@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
 
-  static const int TOKEN_LIMIT = 4096; // 你可以根据你的模型版本进行调整
+  static const int TOKEN_LIMIT = 4096;  
 
   static Future<Map<String, dynamic>> sendPostRequest({
     required String url,
@@ -42,7 +42,7 @@ class ApiService {
 
       Map<String, dynamic> decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
-      // 打印GPT的回复
+  
       String? gptResponse = decodedResponse["choices"]?.first?["text"];
       if (gptResponse != null) {
         printLongString('GPT Response: ${gptResponse.trim()}');
@@ -133,7 +133,7 @@ class ApiService {
   }
 
   static void printLongString(String longString){
-    const int maxLength = 500; // 这是一个近似的值，你可以根据需要调整
+    const int maxLength = 500;  
     int startIndex = 0;
     int endIndex = 0;
 

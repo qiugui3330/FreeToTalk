@@ -95,7 +95,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               return LoginPage();
             }
           } else {
-            return Center(child: CircularProgressIndicator()); // Loading spinner
+            return Center(child: CircularProgressIndicator());   
           }
         },
       ),

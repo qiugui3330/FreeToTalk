@@ -233,7 +233,7 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                                   onPressed: () async {
                                     if (provider.getTranslation ==
                                         'Waiting...') {
-                                      // If translation is not ready, display a message and return
+   
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         SnackBar(
@@ -249,7 +249,6 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                                       Word word = Word(
                                         word: _lastTranslationQuery!,
                                         translation: provider.getTranslation,
-                                        // This should get the translation from your provider
                                         addDate: DateTime.now(),
                                         originalSentence: _lastFullQuery!,
                                       );
@@ -257,9 +256,8 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                                       try {
                                         await DatabaseService.instance
                                             .insertWord(word
-                                                .toMap()); // Use the toMap() method to convert Word to Map
+                                                .toMap());
                                       } catch (e) {
-                                        // If no valid wordbookId is found, display a message
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           SnackBar(

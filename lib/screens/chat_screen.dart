@@ -1,18 +1,18 @@
 import 'dart:developer';
 
-import 'package:chatgpt_course/providers/messages_provider.dart';
-import 'package:chatgpt_course/providers/conversation_provider.dart';
 import 'package:chatgpt_course/database/models/user_model.dart';
+import 'package:chatgpt_course/providers/conversation_provider.dart';
+import 'package:chatgpt_course/providers/messages_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '/widgets/ChatMessageList.dart';
+import '/widgets/MessageInputField.dart';
 import '../services/assets_manager.dart';
 import '../widgets/CustomDrawer.dart';
 import '../widgets/TextWidget.dart';
-import '/widgets/ChatMessageList.dart';
-import '/widgets/MessageInputField.dart';
 
 class ChatScreen extends StatefulWidget {
   final User user;
@@ -52,100 +52,100 @@ class _ChatScreenState extends State<ChatScreen> {
     final conversationProvider = Provider.of<ConversationProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 2,
-        leading: Builder(builder: (BuildContext context) {
-          return IconButton(
-            icon: Icon(LineAwesomeIcons.bars, color: Colors.black),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-          );
-        }),
-        title: Row(
-          children: [
-            Container(
-              height: 40,
-              width: 40,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black87, width: 1),
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                  image: AssetImage(AssetsManager.openaiLogo),
+        appBar: AppBar(
+          elevation: 2,
+          leading: Builder(builder: (BuildContext context) {
+            return IconButton(
+              icon: Icon(LineAwesomeIcons.bars, color: Colors.black),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          }),
+          title: Row(
+            children: [
+              Container(
+                height: 40,
+                width: 40,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black87, width: 1),
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: AssetImage(AssetsManager.openaiLogo),
+                  ),
                 ),
               ),
+              SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'FreeToTalk',
+                      style: TextStyle(color: Colors.black87),
+                    ),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    Consumer<ConversationProvider>(
+                      builder: (context, provider, child) {
+                        return Text(
+                          provider.getCurrentModelName() ?? 'Default mode',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            SizedBox(
+              width: 5,
+            ),
+            Consumer<ConversationProvider>(
+              builder: (context, conversationProvider, child) {
+                return conversationProvider.getCurrentConversation() != null
+                    ? IconButton(
+                        icon: Icon(Icons.exit_to_app, color: Colors.black),
+                        onPressed: () {
+                          String modelName =
+                              conversationProvider.getCurrentModelName() ??
+                                  "Unknown Model";
+                          conversationProvider.clearCurrentConversation();
+                          Provider.of<MessageProvider>(context, listen: false)
+                              .clearChat();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  'Exited $modelName, conversation ended.'),
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                    : SizedBox.shrink();
+              },
             ),
             SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'FreeToTalk',
-                    style: TextStyle(color: Colors.black87),
-                  ),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  Consumer<ConversationProvider>(
-                    builder: (context, provider, child) {
-                      return Text(
-                        provider.getCurrentModelName() ?? 'Default mode',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.green,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
+              width: 20,
             ),
           ],
         ),
-
-        actions: [
-          SizedBox(
-            width: 5,
-          ),
-          Consumer<ConversationProvider>(
-            builder: (context, conversationProvider, child) {
-              return conversationProvider.getCurrentConversation() != null
-                  ? IconButton(
-                icon: Icon(Icons.exit_to_app, color: Colors.black),
-                onPressed: () {
-                  String modelName = conversationProvider.getCurrentModelName() ?? "Unknown Model";
-                  conversationProvider.clearCurrentConversation();
-                  Provider.of<MessageProvider>(context, listen: false).clearChat();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Exited $modelName, conversation ended.'),
-                      behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                    ),
-                  );
-                },
-              )
-                  : SizedBox.shrink();
-            },
-          ),
-
-
-          SizedBox(
-            width: 20,
-          ),
-        ],
-      ),
-      drawer: CustomDrawer(user: widget.user),
+        drawer: CustomDrawer(user: widget.user),
         body: SafeArea(
           child: Column(
             children: [
-              // 这部分是为了确保ChatMessageList只占用除MessageInputField之外的空间
               Expanded(
                 child: Stack(
                   children: [
@@ -164,7 +164,6 @@ class _ChatScreenState extends State<ChatScreen> {
                   ],
                 ),
               ),
-              // 这部分是MessageInputField
               Align(
                 alignment: Alignment.bottomCenter,
                 child: MessageInputField(
@@ -181,9 +180,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ],
           ),
-        )
-
-    );
+        ));
   }
 
   void scrollListToEND() {

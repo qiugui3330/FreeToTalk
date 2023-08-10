@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/messages_provider.dart';
-import 'WordSelectionDialog.dart'; // 确保这是正确的导入路径
+import 'WordSelectionDialog.dart';   
 
 class AdviceField extends StatefulWidget {
   final double placeholderHeightFactor;
@@ -27,14 +27,14 @@ class AdviceFieldState extends State<AdviceField> {
         ),
         child: Column(
           children: [
-            // 占位区
+   
             Expanded(
               flex: (widget.placeholderHeightFactor * 10).toInt(),
               child: Container(
                 color: Color(0xFFf4f3f6),
               ),
             ),
-            // 文本显示区
+   
             Expanded(
               flex: (10 - (widget.placeholderHeightFactor * 10)).toInt(),
               child: Container(
@@ -47,9 +47,9 @@ class AdviceFieldState extends State<AdviceField> {
                   child: Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Center(
-                      child: GestureDetector( // 添加手势检测器
+                      child: GestureDetector(   
                         onLongPress: () {
-                          // 显示WordSelectionDialog
+   
                           showDialog(
                             context: context,
                             builder: (BuildContext context) => WordSelectionDialog(
@@ -85,4 +85,4 @@ class AdviceFieldState extends State<AdviceField> {
   }
 }
 
-// ... [WordSelectionDialog 的代码]
+   

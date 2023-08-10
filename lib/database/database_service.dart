@@ -1,9 +1,8 @@
 import 'package:chatgpt_course/database/models/message_model.dart';
 import 'package:chatgpt_course/database/models/user_model.dart';
-import 'package:chatgpt_course/database/models/word_model.dart';
 import 'package:chatgpt_course/database/models/wordbook_model.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
 import 'models/conversation_model.dart';
 
@@ -11,7 +10,6 @@ class DatabaseService {
   static final _databaseName = "my_database.db";
   static final _databaseVersion = 1;
 
-  // User table
   static final userTable = 'user';
   static final userIdColumn = '_id';
   static final usernameColumn = 'username';
@@ -19,13 +17,11 @@ class DatabaseService {
   static final passwordColumn = 'password';
   static final isLoggedInColumn = 'isLoggedIn';
 
-  // WordBook table
   static final wordBookTable = 'wordbook';
   static final wordBookIdColumn = 'id';
   static final wordBookUserIdColumn = 'userId';
   static final wordBookNameColumn = 'name';
 
-  // Word table
   static final wordTable = 'words';
   static final wordIdColumn = 'id';
   static final wordWordColumn = 'word';
@@ -35,14 +31,12 @@ class DatabaseService {
   static final wordMasteredColumn = 'mastered';
   static final wordOriginalSentenceColumn = 'originalSentence';
 
-  // Conversation table
   static final conversationTable = 'conversation';
   static final conversationIdColumn = 'id';
   static final conversationUserIdColumn = 'userId';
   static final conversationTypeColumn = 'type';
   static final conversationDateColumn = 'date';
 
-// Message table
   static final messageTable = 'message';
   static final messageIdColumn = 'id';
   static final messageConversationIdColumn = 'conversationId';
@@ -68,7 +62,6 @@ class DatabaseService {
   }
 
   Future _onCreate(Database db, int version) async {
-    // Create user table
     await db.execute('''
       CREATE TABLE $userTable (
         $userIdColumn INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -79,7 +72,6 @@ class DatabaseService {
       )
     ''');
 
-    // Create wordbook table
     await db.execute('''
       CREATE TABLE $wordBookTable (
         $wordBookIdColumn INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -88,7 +80,6 @@ class DatabaseService {
       )
     ''');
 
-    // Create word table
     await db.execute('''
       CREATE TABLE $wordTable (
         $wordIdColumn INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -102,8 +93,6 @@ class DatabaseService {
       )
     ''');
 
-
-    // Create conversation table
     await db.execute('''
   CREATE TABLE $conversationTable (
     $conversationIdColumn INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -114,7 +103,6 @@ class DatabaseService {
   )
 ''');
 
-// Create message table
     await db.execute('''
    CREATE TABLE $messageTable (
     $messageIdColumn INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -160,7 +148,7 @@ class DatabaseService {
   Future<int> queryUserCount() async {
     Database db = await instance.database;
     return Sqflite.firstIntValue(
-        await db.rawQuery('SELECT COUNT(*) FROM $userTable')) ??
+            await db.rawQuery('SELECT COUNT(*) FROM $userTable')) ??
         0;
   }
 
@@ -208,7 +196,7 @@ class DatabaseService {
     Database db = await instance.database;
     int wordbookId = await getCurrentUserWordBookId();
     if (wordbookId != -1) {
-      row['wordbookId'] = wordbookId; // Add wordbookId to the row
+      row['wordbookId'] = wordbookId;
       int insertedId = await db.insert(wordTable, row);
       await printAllRows(wordTable);
       return insertedId;
@@ -254,9 +242,7 @@ class DatabaseService {
     DateTime now = DateTime.now();
     for (var word in allWords) {
       DateTime addDate = DateTime.parse(word[wordAddDateColumn]);
-      int daysAgo = now
-          .difference(addDate)
-          .inDays;
+      int daysAgo = now.difference(addDate).inDays;
 
       if (daysAgoList.contains(daysAgo)) {
         words.add(word[wordWordColumn]);
@@ -271,7 +257,6 @@ class DatabaseService {
     WordBook wordBook = WordBook(userId: userId, name: name);
     await insertWordBook(wordBook.toMap());
   }
-
 
   Future<String> getUserName(int userId) async {
     Database db = await instance.database;

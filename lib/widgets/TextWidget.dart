@@ -43,7 +43,7 @@ class TextWidget extends StatelessWidget {
             ),
             child: Text(
               label,
-              // textAlign: TextAlign.justify,
+   
               style: TextStyle(
                 color: color ?? Colors.black87,
                 fontSize: fontSize,
