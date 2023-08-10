@@ -9,7 +9,6 @@ import '../database/database_service.dart';
 import '../database/word_model.dart';
 import '../providers/messages_provider.dart';
 
-
 class WordSelectionDialog extends StatefulWidget {
   final String msg;
   final BuildContext parentContext;
@@ -55,7 +54,8 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
     for (int i = 0; i < _selectedWords.length; i++) {
       selectedStrings.add(words[_selectedWords[i]]);
       if (i != _selectedWords.length - 1) {
-        selectedStrings.add(_selectedWords[i + 1] - _selectedWords[i] == 1 ? ' ' : '...');
+        selectedStrings
+            .add(_selectedWords[i + 1] - _selectedWords[i] == 1 ? ' ' : '...');
       }
     }
 
@@ -126,7 +126,8 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
   @override
   Widget build(BuildContext context) {
     RegExp exp = RegExp(r"\b\w+\'\w+\b|\w+|[^\w\s\'\n]|\s+");
-    List<String> words = exp.allMatches(widget.msg).map((m) => m.group(0)!).toList();
+    List<String> words =
+        exp.allMatches(widget.msg).map((m) => m.group(0)!).toList();
     words.removeWhere((word) => word.trim() == '' || word.contains('\n'));
 
     return Material(
@@ -154,34 +155,34 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                         .asMap()
                         .entries
                         .map((entry) => Container(
-                      margin: EdgeInsets.symmetric(horizontal: 4.0),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: _selectedWords.contains(entry.key)
-                              ? _multiSelectStartIndex != null &&
-                              _selectedWords.first == entry.key
-                              ? Colors.green
-                              : Colors.blue
-                              : Color.fromARGB(255, 244, 243, 246),
-                          minimumSize: Size(30, 30),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 8.0, vertical: 8.0),
-                        ),
-                        onPressed: () =>
-                            _toggleWordSelection(entry.key, words),
-                        onLongPress: () => _onLongPress(entry.key),
-                        child: Text(
-                          entry.value,
-                          style: TextStyle(
-                              color: Colors.black87,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 14),
-                        ),
-                      ),
-                    ))
+                              margin: EdgeInsets.symmetric(horizontal: 4.0),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: _selectedWords.contains(entry.key)
+                                      ? _multiSelectStartIndex != null &&
+                                              _selectedWords.first == entry.key
+                                          ? Colors.green
+                                          : Colors.blue
+                                      : Color.fromARGB(255, 244, 243, 246),
+                                  minimumSize: Size(30, 30),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 8.0, vertical: 8.0),
+                                ),
+                                onPressed: () =>
+                                    _toggleWordSelection(entry.key, words),
+                                onLongPress: () => _onLongPress(entry.key),
+                                child: Text(
+                                  entry.value,
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14),
+                                ),
+                              ),
+                            ))
                         .toList(),
                   ),
                 ),
@@ -201,19 +202,19 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                         child: Consumer<MessageProvider>(
                           builder: (context, chatProvider, _) =>
                               SingleChildScrollView(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Center(
-                                    child: Text(
-                                      chatProvider.getTranslation,
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 16),
-                                    ),
-                                  ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Center(
+                                child: Text(
+                                  chatProvider.getTranslation,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 16),
                                 ),
                               ),
+                            ),
+                          ),
                         ),
                       ),
                       Expanded(
@@ -230,29 +231,37 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                                   backgroundColor: Colors.transparent,
                                   elevation: 0,
                                   onPressed: () async {
-                                    if (provider.getTranslation == 'Waiting...') {
+                                    if (provider.getTranslation ==
+                                        'Waiting...') {
                                       // If translation is not ready, display a message and return
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
                                         SnackBar(
-                                          content: Text('Please wait for the translation'),
+                                          content: Text(
+                                              'Please wait for the translation'),
                                         ),
                                       );
                                       return;
                                     }
 
-                                    if (_lastTranslationQuery != null && _lastFullQuery != null) {
+                                    if (_lastTranslationQuery != null &&
+                                        _lastFullQuery != null) {
                                       Word word = Word(
                                         word: _lastTranslationQuery!,
-                                        translation: provider.getTranslation, // This should get the translation from your provider
+                                        translation: provider.getTranslation,
+                                        // This should get the translation from your provider
                                         addDate: DateTime.now(),
                                         originalSentence: _lastFullQuery!,
                                       );
 
                                       try {
-                                        await DatabaseService.instance.insertWord(word.toMap()); // Use the toMap() method to convert Word to Map
+                                        await DatabaseService.instance
+                                            .insertWord(word
+                                                .toMap()); // Use the toMap() method to convert Word to Map
                                       } catch (e) {
                                         // If no valid wordbookId is found, display a message
-                                        ScaffoldMessenger.of(context).showSnackBar(
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
                                           SnackBar(
                                             content: Text(e.toString()),
                                           ),
@@ -262,13 +271,14 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                                   },
                                   child: Icon(Icons.add, size: 20),
                                 ),
-
                                 FloatingActionButton(
                                   mini: true,
                                   backgroundColor: Colors.transparent,
                                   elevation: 0,
                                   onPressed: () {
-                                    String wordsToSpeak = _selectedWords.map((index) => words[index]).join(' ');
+                                    String wordsToSpeak = _selectedWords
+                                        .map((index) => words[index])
+                                        .join(' ');
                                     _ttsService.speak(wordsToSpeak);
                                   },
                                   child: Icon(Icons.play_arrow, size: 20),
@@ -285,8 +295,11 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                                   backgroundColor: Colors.transparent,
                                   elevation: 0,
                                   onPressed: () {
-                                    if (_lastTranslationQuery != null && _lastFullQuery != null) {
-                                      provider.getTranslationResult(_lastTranslationQuery!, _lastFullQuery!);
+                                    if (_lastTranslationQuery != null &&
+                                        _lastFullQuery != null) {
+                                      provider.getTranslationResult(
+                                          _lastTranslationQuery!,
+                                          _lastFullQuery!);
                                     }
                                   },
                                   child: Icon(Icons.refresh, size: 20),
@@ -300,7 +313,6 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                   ),
                 ),
               )
-
             ],
           ),
         ),
