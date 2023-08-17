@@ -75,7 +75,7 @@ class DatabaseService {
     await db.execute('''
       CREATE TABLE $wordBookTable (
         $wordBookIdColumn INTEGER PRIMARY KEY AUTOINCREMENT,
-        $wordBookUserIdColumn INTEGER,
+        $wordBookUserIdColumn INTEGER UNIQUE,
         $wordBookNameColumn TEXT NOT NULL
       )
     ''');
@@ -170,8 +170,13 @@ class DatabaseService {
 
   Future<void> insertWordBook(Map<String, dynamic> row) async {
     Database db = await instance.database;
-    await db.insert(wordBookTable, row);
-    await printAllRows(wordBookTable);
+    List<Map<String, dynamic>> existingWordBooks = await db.query(wordBookTable, where: '$wordBookUserIdColumn = ?', whereArgs: [row[wordBookUserIdColumn]]);
+    if (existingWordBooks.isEmpty) {
+      await db.insert(wordBookTable, row);
+      await printAllRows(wordBookTable);
+    } else {
+      print('User already has a WordBook.');
+    }
   }
 
   Future<int> updateWordBook(Map<String, dynamic> row) async {
