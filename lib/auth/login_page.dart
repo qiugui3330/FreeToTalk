@@ -69,18 +69,19 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 child: Text('Login', style: TextStyle(fontSize: 20)),
-                onPressed: () async {  // 注意这里添加了 async
+                onPressed: () async {
                   try {
-                    User? user = await Provider.of<AuthProvider>(context, listen: false).login(  // 这里添加了 await
+                    User? user = await Provider.of<AuthProvider>(context, listen: false).login(
                       emailController.text,
                       passwordController.text,
                     );
 
                     if (user != null) {
-                      Navigator.of(context).pushReplacement(
+                      Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
                           builder: (context) => ChatScreen(user: user),
                         ),
+                            (route) => false, // Remove all previous routes
                       );
                     }
                   } catch (e) {
