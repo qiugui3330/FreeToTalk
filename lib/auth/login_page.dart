@@ -4,8 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:chatgpt_course/screens/chat_screen.dart';
 import 'package:chatgpt_course/auth/register_page.dart';
 import 'package:chatgpt_course/widgets/CustomTextField.dart';
+import 'package:provider/provider.dart';
 
 import '../database/models/user_model.dart';
+import '../providers/auth_provider.dart';
 
  
 class LoginPage extends StatelessWidget {
@@ -67,37 +69,18 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 child: Text('Login', style: TextStyle(fontSize: 20)),
-                onPressed: () async {
+                onPressed: () async {  // 注意这里添加了 async
                   try {
- 
-                    User? user = await authService.login(
-                        emailController.text, passwordController.text);
+                    User? user = await Provider.of<AuthProvider>(context, listen: false).login(  // 这里添加了 await
+                      emailController.text,
+                      passwordController.text,
+                    );
 
                     if (user != null) {
- 
-                      Navigator.of(context).pushReplacement( 
+                      Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
                           builder: (context) => ChatScreen(user: user),
                         ),
-                      );
-                    } else {
- 
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text("Error"),
-                            content: Text('Invalid credentials'),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text("OK"),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          );
-                        },
                       );
                     }
                   } catch (e) {

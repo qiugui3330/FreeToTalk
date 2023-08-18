@@ -1,3 +1,4 @@
+import 'package:chatgpt_course/providers/auth_provider.dart';
 import 'package:chatgpt_course/providers/conversation_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +21,10 @@ void main() {
           create: (context) => MessageProvider(
             Provider.of<ConversationProvider>(context, listen: false),
           ),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => AuthProvider(),
+          child: MyApp(),
         ),
         Provider(
           create: (_) => AuthenticationService(),
@@ -95,7 +100,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               return LoginPage();
             }
           } else {
-            return Center(child: CircularProgressIndicator());   
+            return Center(child: CircularProgressIndicator());
           }
         },
       ),

@@ -1,6 +1,7 @@
 import 'package:chatgpt_course/auth/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 import '../services/authentication_service.dart';
 import '../widgets/CustomTextField.dart';
 import 'login_page.dart';
@@ -106,8 +107,12 @@ class RegisterPageState extends State<RegisterPage> {
 
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      var authService = Provider.of<AuthenticationService>(context, listen: false);
-      var registerResult = await authService.register(_username.text, _email.text, _password.text);
+      String? registerResult = await Provider.of<AuthProvider>(context, listen: false).register(
+        _username.text,
+        _email.text,
+        _password.text,
+      );
+
       if (registerResult == null) {
         Navigator.pushReplacement(
           context,
