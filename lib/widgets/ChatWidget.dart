@@ -3,6 +3,7 @@ import 'package:chatgpt_course/widgets/WordSelectionDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:chatgpt_course/services/assets_manager.dart';
 import 'package:chatgpt_course/services/TtsService.dart';   
+import '../constants/theme_constants.dart';
 import 'TextWidget.dart';
 
    
@@ -72,11 +73,11 @@ class _ChatWidgetState extends State<ChatWidget> {
                 height: 50,
                 width: 50,
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 1.5),
+                  border: Border.all(color: whiteBorderColor, width: 1.5),
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                        color: Color.fromARGB(255, 72, 69, 69).withOpacity(0.3),
+                        color: boxShadowBackgroundColor.withOpacity(0.3),
                         blurRadius: 1.0,
                         spreadRadius: 2.0),
                   ],
@@ -105,14 +106,14 @@ class _ChatWidgetState extends State<ChatWidget> {
                         ? Text(
                       widget.msg.trim(),
                       style: TextStyle(
-                          color: Colors.black87,
+                          color: primaryTextColor,
                           fontWeight: FontWeight.w700,
                           fontSize: 16),
                     )
                         : Text(
                       "Text is hidden",
                       style: TextStyle(
-                          color: Colors.black87,
+                          color: primaryTextColor,
                           fontWeight: FontWeight.w700,
                           fontSize: 16),
                     ),
@@ -136,7 +137,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                     children: [
                       IconButton(
                         icon: Icon(Icons.remove_red_eye),
-                        color: Colors.black87,
+                        color: primaryTextColor,
                         onPressed: () {
                           setState(() {
                             _isTextVisible = !_isTextVisible;

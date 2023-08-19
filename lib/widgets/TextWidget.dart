@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../constants/theme_constants.dart';
 import '../database/models/user_model.dart';
 
 class TextWidget extends StatelessWidget {
@@ -25,14 +26,14 @@ class TextWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(user?.username ?? 'User',style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: Colors.black87),),
+          Text(user?.username ?? 'User',style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: primaryTextColor),),
           SizedBox(height: 5,),
           Container(
             padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Color(0xFFf4f3f6),
+              color: secondaryBackgroundColor,
               border: Border.all(
-                color: Colors.black87,
+                color: primaryBorderColor,
                 width: 1.5
               ),
               borderRadius: BorderRadius.only(
@@ -45,7 +46,7 @@ class TextWidget extends StatelessWidget {
               label,
    
               style: TextStyle(
-                color: color ?? Colors.black87,
+                color: color ?? primaryTextColor,
                 fontSize: fontSize,
                 fontWeight: fontWeight ?? FontWeight.w600,
               ),

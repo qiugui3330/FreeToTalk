@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../constants/theme_constants.dart';
 import '../providers/messages_provider.dart';
 import 'WordSelectionDialog.dart';   
 
@@ -21,7 +22,7 @@ class AdviceFieldState extends State<AdviceField> {
         height: MediaQuery.of(context).size.height * 0.125,
         margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
         decoration: BoxDecoration(
-          color: Color(0xFFf4f3f6),
+          color: secondaryBackgroundColor,
           border: Border.all(color: Colors.black87, width: 1.5),
           borderRadius: BorderRadius.all(Radius.circular(20.0)),
         ),
@@ -31,7 +32,7 @@ class AdviceFieldState extends State<AdviceField> {
             Expanded(
               flex: (widget.placeholderHeightFactor * 10).toInt(),
               child: Container(
-                color: Color(0xFFf4f3f6),
+                color: secondaryBackgroundColor,
               ),
             ),
    
@@ -41,7 +42,7 @@ class AdviceFieldState extends State<AdviceField> {
                 margin: EdgeInsets.all(10.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
-                  color: Colors.blueGrey,
+                  color: textFieldBackgroundColor,
                 ),
                 child: SingleChildScrollView(
                   child: Padding(
@@ -65,7 +66,7 @@ class AdviceFieldState extends State<AdviceField> {
                               ? 'Free to ask!'
                               : chatProvider.getTranslation,
                           style: TextStyle(
-                              color: Colors.white,
+                              color: whiteTextColor,
                               fontWeight: FontWeight.w700,
                               fontSize: 16),
                         ),

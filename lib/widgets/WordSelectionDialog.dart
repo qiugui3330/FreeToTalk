@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:chatgpt_course/services/TtsService.dart';
 import 'dart:math';
 
+import '../constants/theme_constants.dart';
 import '../database/database_service.dart';
 import '../database/models/word_model.dart';
 import '../providers/messages_provider.dart';
@@ -138,7 +139,7 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
           height: MediaQuery.of(widget.parentContext).size.height / 2.3,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
-            color: Colors.white,
+            color: primaryBackgroundColor,
           ),
           padding: EdgeInsets.all(10.0),
           child: Column(
@@ -161,9 +162,9 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                                   primary: _selectedWords.contains(entry.key)
                                       ? _multiSelectStartIndex != null &&
                                               _selectedWords.first == entry.key
-                                          ? Colors.green
-                                          : Colors.blue
-                                      : Color.fromARGB(255, 244, 243, 246),
+                                          ? greenBackgroundColor
+                                          : blueBackgroundColor
+                                      : greyBackgroundColor,
                                   minimumSize: Size(30, 30),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
@@ -177,7 +178,7 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                                 child: Text(
                                   entry.value,
                                   style: TextStyle(
-                                      color: Colors.black87,
+                                      color: primaryTextColor,
                                       fontWeight: FontWeight.w700,
                                       fontSize: 14),
                                 ),
@@ -193,7 +194,7 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                   margin: EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
-                    color: Colors.blueGrey,
+                    color: textFieldBackgroundColor,
                   ),
                   child: Column(
                     children: [
@@ -208,7 +209,7 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                                 child: Text(
                                   chatProvider.getTranslation,
                                   style: TextStyle(
-                                      color: Colors.white,
+                                      color: whiteTextColor,
                                       fontWeight: FontWeight.w700,
                                       fontSize: 16),
                                 ),

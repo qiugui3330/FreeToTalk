@@ -3,6 +3,8 @@ import 'package:chatgpt_course/providers/messages_provider.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
+import '../constants/theme_constants.dart';
+
 class SendButton extends StatefulWidget {
   final FocusNode focusNode;
   final TextEditingController textEditingController;
@@ -83,7 +85,7 @@ class _SendButtonState extends State<SendButton> {
             width: 1.5,
           ),
           borderRadius: BorderRadius.circular(30),
-          color: Colors.white,
+          color: primaryBackgroundColor,
         ),
         child: Column(
           children: [
@@ -92,7 +94,7 @@ class _SendButtonState extends State<SendButton> {
                 onPressed: sendMessageWrapper,
                 icon: const Icon(
                   LineAwesomeIcons.telegram_plane,
-                  color: Color.fromARGB(221, 206, 125, 3),
+                  color: yellowIconColor,
                   size: 30,
                 ),
               ),

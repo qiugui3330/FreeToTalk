@@ -71,7 +71,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 height: 40,
                 width: 40,
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black87, width: 1),
+                  border: Border.all(color: primaryBorderColor, width: 1),
                   shape: BoxShape.circle,
                   image: DecorationImage(
                     image: AssetImage(AssetsManager.openaiLogo),

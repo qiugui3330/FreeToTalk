@@ -56,7 +56,7 @@ class _WordBookPageState extends State<WordBookPage> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Text(
                           entry.key,
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: primaryTextColor),
                         ),
                       ),
                       ...entry.value.map((word) {
@@ -65,7 +65,7 @@ class _WordBookPageState extends State<WordBookPage> {
                           margin: EdgeInsets.only(bottom: 16.0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
-                            side: BorderSide(color: Colors.black87, width: 1.5),
+                            side: BorderSide(color: primaryBorderColor, width: 1.5),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
@@ -76,26 +76,26 @@ class _WordBookPageState extends State<WordBookPage> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(word['word']!, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87)),
+                                      Text(word['word']!, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: primaryTextColor)),
                                       IconButton(
-                                        icon: Icon(Icons.play_arrow, color: Colors.grey[400]),
+                                        icon: Icon(Icons.play_arrow, color: secondaryIconColor),
                                         onPressed: () => _ttsService.speak(word['word']!),
                                       ),
                                     ],
                                   ),
                                 SizedBox(height: 8.0),
                                 if (word['translation'] != null)
-                                  Text(word['translation']!, style: TextStyle(fontSize: 16, color: Colors.black87)),
+                                  Text(word['translation']!, style: TextStyle(fontSize: 16, color: primaryTextColor)),
                                 SizedBox(height: 8.0),
                                 if (word['originalSentence'] != null)
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Flexible(
-                                        child: Text(word['originalSentence']!, style: TextStyle(fontSize: 16, color: Colors.black87)),
+                                        child: Text(word['originalSentence']!, style: TextStyle(fontSize: 16, color: primaryTextColor)),
                                       ),
                                       IconButton(
-                                        icon: Icon(Icons.play_arrow, color: Colors.grey[400]),
+                                        icon: Icon(Icons.play_arrow, color: secondaryIconColor),
                                         onPressed: () => _ttsService.speak(word['originalSentence']!),
                                       ),
                                     ],
@@ -110,7 +110,7 @@ class _WordBookPageState extends State<WordBookPage> {
                 }).toList(),
               );
             } else {
-              return Center(child: Text('No words found.', style: TextStyle(color: Colors.black87, fontSize: 18)));
+              return Center(child: Text('No words found.', style: TextStyle(color: primaryTextColor, fontSize: 18)));
             }
           } else {
             return Center(child: CircularProgressIndicator());

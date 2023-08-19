@@ -47,14 +47,14 @@ class CustomDrawer extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.grey[200],
+          backgroundColor: secondaryBackgroundColor,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: Text(
             'Create a New Roleplay Dialogue',
             style: TextStyle(
               fontSize: 24.0,
               fontWeight: FontWeight.bold,
-              color: Colors.black87,
+              color: primaryTextColor,
             ),
           ),
           content: SingleChildScrollView(
@@ -105,13 +105,13 @@ class CustomDrawer extends StatelessWidget {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel', style: TextStyle(color: Colors.red)),
+              child: Text('Cancel', style: TextStyle(color: redTextColor)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Submit', style: TextStyle(color: Colors.green)),
+              child: Text('Submit', style: TextStyle(color: greenTextColor)),
               onPressed: () {
                 if (userRoleController.text.isEmpty &&
                     aiRoleController.text.isEmpty &&
@@ -150,18 +150,18 @@ class CustomDrawer extends StatelessWidget {
           UserAccountsDrawerHeader(
             accountName: Text(
               user.username,
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: primaryTextColor),
             ),
             accountEmail: Text(
               user.email,   
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: primaryTextColor),
             ),
             currentAccountPicture: CircleAvatar(
               backgroundImage: AssetImage(AssetsManager
                   .openaiLogo),   
             ),
             decoration: BoxDecoration(
-              color: Color.fromRGBO(244, 243, 246, 1),
+              color: primaryAppBarColor,
             ),
           ),
           ListTile(
