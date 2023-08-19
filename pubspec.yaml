@@ -43,7 +43,9 @@ dependencies:
   flutter_tts: ^3.7.0
   speech_to_text: ^6.3.0
   crypto: ^3.0.3
-  intl: ^0.17.0
+  intl: 0.18.0
+  flutter_form_builder: 9.1.0
+  form_builder_validators: ^9.0.0
 
 dev_dependencies:
 

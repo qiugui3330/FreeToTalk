@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:chatgpt_course/providers/auth_provider.dart';
-import 'package:chatgpt_course/widgets/CustomTextField.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -9,110 +10,109 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final TextEditingController _username = TextEditingController();
-  final TextEditingController _email = TextEditingController();
-  final TextEditingController _password = TextEditingController();
-  final TextEditingController _confirmPassword = TextEditingController();
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormBuilderState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Register'),
+        title: Text('Register', style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(height: 100),
-            Form(
-              key: _formKey,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                child: Column(
-                  children: [
-                    CustomTextField(
-                      controller: _username,
-                      labelText: 'Username',
-                      hintText: 'Please enter username',
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter username';
-                        }
-                        if (value.length < 5 || value.length > 15) {
-                          return 'Username should be between 5 and 15 characters';
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: 20),
-                    CustomTextField(
-                      controller: _email,
-                      labelText: 'Email',
-                      hintText: 'Please enter email',
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter email';
-                        }
-                        if (!value.contains(RegExp(r'^[a-zA-Z0-9.a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}'))) {
-                          return 'Please enter a valid email';
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: 20),
-                    CustomTextField(
-                      controller: _password,
-                      labelText: 'Password',
-                      hintText: 'Please enter password',
-                      obscureText: true,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter password';
-                        }
-                        if (value.length < 8 || !value.contains(RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'))) {
-                          return 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character';
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: 20),
-                    CustomTextField(
-                      controller: _confirmPassword,
-                      labelText: 'Confirm Password',
-                      hintText: 'Please confirm password',
-                      obscureText: true,
-                      validator: (value) {
-                        if (value != _password.text) {
-                          return 'Passwords do not match';
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: 40),
-                    ElevatedButton(
-                      onPressed: _submitForm,
-                      child: Text('Register'),
-                    ),
-                  ],
+        child: Padding(
+          padding: const EdgeInsets.all(40.0),
+          child: FormBuilder(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                FormBuilderTextField(
+                  name: 'username',
+                  decoration: InputDecoration(
+                    labelText: 'Username',
+                    hintText: 'Please enter username',
+                  ),
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(),
+                    FormBuilderValidators.minLength(5),
+                    FormBuilderValidators.maxLength(15),
+                  ]),
+                  autovalidateMode: AutovalidateMode.onUserInteraction, // 添加此行
                 ),
-              ),
+                SizedBox(height: 20),
+                FormBuilderTextField(
+                  name: 'email',
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    hintText: 'Please enter email',
+                  ),
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(),
+                    FormBuilderValidators.email(),
+                  ]),
+                  autovalidateMode: AutovalidateMode.onUserInteraction, // 添加此行
+                ),
+                SizedBox(height: 20),
+                FormBuilderTextField(
+                  name: 'password',
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    hintText: 'Please enter password',
+                  ),
+                  obscureText: true,
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(),
+                    FormBuilderValidators.minLength(8),
+                  ]),
+                  autovalidateMode: AutovalidateMode.onUserInteraction, // 添加此行
+                ),
+                SizedBox(height: 20),
+                FormBuilderTextField(
+                  name: 'confirmPassword',
+                  decoration: InputDecoration(
+                    labelText: 'Confirm Password',
+                    hintText: 'Please confirm password',
+                  ),
+                  obscureText: true,
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(),
+                        (val) {
+                      if (val != _formKey.currentState?.fields['password']?.value) {
+                        return 'Passwords do not match';
+                      }
+                      return null;
+                    },
+                  ]),
+                  autovalidateMode: AutovalidateMode.onUserInteraction, // 添加此行
+                ),
+                SizedBox(height: 40),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Theme.of(context).primaryColor,
+                    padding: EdgeInsets.symmetric(horizontal: 100, vertical: 20),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  onPressed: _submitForm,
+                  child: Text('Register'),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 
   void _submitForm() {
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState?.saveAndValidate() ?? false) {
       Provider.of<AuthProvider>(context, listen: false).registerAndNavigate(
-        _username.text,
-        _email.text,
-        _password.text,
+        _formKey.currentState?.fields['username']?.value,
+        _formKey.currentState?.fields['email']?.value,
+        _formKey.currentState?.fields['password']?.value,
         context,
       );
     }
