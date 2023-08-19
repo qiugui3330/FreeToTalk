@@ -139,7 +139,7 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
           height: MediaQuery.of(widget.parentContext).size.height / 2.3,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
-            color: primaryBackgroundColor,
+            color: whiteColor,
           ),
           padding: EdgeInsets.all(10.0),
           child: Column(
@@ -162,9 +162,9 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                                   primary: _selectedWords.contains(entry.key)
                                       ? _multiSelectStartIndex != null &&
                                               _selectedWords.first == entry.key
-                                          ? greenBackgroundColor
-                                          : blueBackgroundColor
-                                      : greyBackgroundColor,
+                                          ? successBgColor
+                                          : infoBgColor
+                                      : greyBgColor,
                                   minimumSize: Size(30, 30),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
@@ -178,7 +178,7 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                                 child: Text(
                                   entry.value,
                                   style: TextStyle(
-                                      color: primaryTextColor,
+                                      color: textBlackColor,
                                       fontWeight: FontWeight.w700,
                                       fontSize: 14),
                                 ),
@@ -194,7 +194,7 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                   margin: EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
-                    color: textFieldBackgroundColor,
+                    color: textFieldBgColor,
                   ),
                   child: Column(
                     children: [
@@ -209,7 +209,7 @@ class _WordSelectionDialogState extends State<WordSelectionDialog> {
                                 child: Text(
                                   chatProvider.getTranslation,
                                   style: TextStyle(
-                                      color: whiteTextColor,
+                                      color: textWhiteColor,
                                       fontWeight: FontWeight.w700,
                                       fontSize: 16),
                                 ),

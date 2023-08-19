@@ -26,14 +26,14 @@ class TextWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(user?.username ?? 'User',style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: primaryTextColor),),
+          Text(user?.username ?? 'User',style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: textBlackColor),),
           SizedBox(height: 5,),
           Container(
             padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: secondaryBackgroundColor,
+              color: lightGreyColor,
               border: Border.all(
-                color: primaryBorderColor,
+                color: blackBorderColor,
                 width: 1.5
               ),
               borderRadius: BorderRadius.only(
@@ -46,7 +46,7 @@ class TextWidget extends StatelessWidget {
               label,
    
               style: TextStyle(
-                color: color ?? primaryTextColor,
+                color: color ?? textBlackColor,
                 fontSize: fontSize,
                 fontWeight: fontWeight ?? FontWeight.w600,
               ),

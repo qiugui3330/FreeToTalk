@@ -55,11 +55,11 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
         appBar: AppBar(
           elevation: 2,
-          backgroundColor: primaryAppBarColor,
-          iconTheme: appBarIconTheme,
+          backgroundColor: appBarBgColor,
+          iconTheme: appBarIconThemeData,
           leading: Builder(builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(LineAwesomeIcons.bars, color: primaryIconColor),
+              icon: Icon(LineAwesomeIcons.bars, color: iconBlackColor),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
@@ -71,7 +71,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 height: 40,
                 width: 40,
                 decoration: BoxDecoration(
-                  border: Border.all(color: primaryBorderColor, width: 1),
+                  border: Border.all(color: blackBorderColor, width: 1),
                   shape: BoxShape.circle,
                   image: DecorationImage(
                     image: AssetImage(AssetsManager.openaiLogo),
@@ -87,7 +87,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   children: [
                     Text(
                       'FreeToTalk',
-                      style: TextStyle(color: primaryTextColor),
+                      style: TextStyle(color: textBlackColor),
                     ),
                     SizedBox(
                       height: 4,
@@ -98,7 +98,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           provider.getCurrentModelName() ?? 'Default mode',
                           style: TextStyle(
                             fontSize: 12,
-                            color: greenTextColor,
+                            color: textGreenColor,
                             fontWeight: FontWeight.bold,
                           ),
                         );
@@ -117,7 +117,7 @@ class _ChatScreenState extends State<ChatScreen> {
               builder: (context, conversationProvider, child) {
                 return conversationProvider.getCurrentConversation() != null
                     ? IconButton(
-                        icon: Icon(Icons.exit_to_app, color: primaryIconColor),
+                        icon: Icon(Icons.exit_to_app, color: iconBlackColor),
                         onPressed: () {
                           String modelName =
                               conversationProvider.getCurrentModelName() ??
@@ -200,7 +200,7 @@ class _ChatScreenState extends State<ChatScreen> {
           content: TextWidget(
             label: "You cant send multiple messages at a time",
           ),
-          backgroundColor: snackBarBackgroundColor,
+          backgroundColor: errorBgColor,
         ),
       );
       return;
@@ -211,7 +211,7 @@ class _ChatScreenState extends State<ChatScreen> {
           content: TextWidget(
             label: "Please type a message",
           ),
-          backgroundColor: snackBarBackgroundColor,
+          backgroundColor: errorBgColor,
         ),
       );
       return;
@@ -233,7 +233,7 @@ class _ChatScreenState extends State<ChatScreen> {
         content: TextWidget(
           label: error.toString(),
         ),
-        backgroundColor: snackBarBackgroundColor,
+        backgroundColor: errorBgColor,
       ));
     } finally {
       setState(() {

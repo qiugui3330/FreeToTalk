@@ -34,11 +34,11 @@ class _WordBookPageState extends State<WordBookPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: primaryBackgroundColor,
+      backgroundColor: whiteColor,
       appBar: AppBar(
-        title: Text('Word Book', style: primaryAppBarTextStyle),
-        backgroundColor: primaryAppBarColor,
-        iconTheme: appBarIconTheme,
+        title: Text('Word Book', style: appBarTextStyle),
+        backgroundColor: appBarBgColor,
+        iconTheme: appBarIconThemeData,
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _wordsFuture,
@@ -56,16 +56,16 @@ class _WordBookPageState extends State<WordBookPage> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Text(
                           entry.key,
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: primaryTextColor),
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textBlackColor),
                         ),
                       ),
                       ...entry.value.map((word) {
                         return Card(
-                          color: secondaryBackgroundColor,
+                          color: lightGreyColor,
                           margin: EdgeInsets.only(bottom: 16.0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
-                            side: BorderSide(color: primaryBorderColor, width: 1.5),
+                            side: BorderSide(color: blackBorderColor, width: 1.5),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
@@ -76,26 +76,26 @@ class _WordBookPageState extends State<WordBookPage> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(word['word']!, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: primaryTextColor)),
+                                      Text(word['word']!, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textBlackColor)),
                                       IconButton(
-                                        icon: Icon(Icons.play_arrow, color: secondaryIconColor),
+                                        icon: Icon(Icons.play_arrow, color: iconGreyColor),
                                         onPressed: () => _ttsService.speak(word['word']!),
                                       ),
                                     ],
                                   ),
                                 SizedBox(height: 8.0),
                                 if (word['translation'] != null)
-                                  Text(word['translation']!, style: TextStyle(fontSize: 16, color: primaryTextColor)),
+                                  Text(word['translation']!, style: TextStyle(fontSize: 16, color: textBlackColor)),
                                 SizedBox(height: 8.0),
                                 if (word['originalSentence'] != null)
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Flexible(
-                                        child: Text(word['originalSentence']!, style: TextStyle(fontSize: 16, color: primaryTextColor)),
+                                        child: Text(word['originalSentence']!, style: TextStyle(fontSize: 16, color: textBlackColor)),
                                       ),
                                       IconButton(
-                                        icon: Icon(Icons.play_arrow, color: secondaryIconColor),
+                                        icon: Icon(Icons.play_arrow, color: iconGreyColor),
                                         onPressed: () => _ttsService.speak(word['originalSentence']!),
                                       ),
                                     ],
@@ -110,7 +110,7 @@ class _WordBookPageState extends State<WordBookPage> {
                 }).toList(),
               );
             } else {
-              return Center(child: Text('No words found.', style: TextStyle(color: primaryTextColor, fontSize: 18)));
+              return Center(child: Text('No words found.', style: TextStyle(color: textBlackColor, fontSize: 18)));
             }
           } else {
             return Center(child: CircularProgressIndicator());

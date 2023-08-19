@@ -77,7 +77,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                        color: boxShadowBackgroundColor.withOpacity(0.3),
+                        color: darkGreyBgColor.withOpacity(0.3),
                         blurRadius: 1.0,
                         spreadRadius: 2.0),
                   ],
@@ -106,14 +106,14 @@ class _ChatWidgetState extends State<ChatWidget> {
                         ? Text(
                       widget.msg.trim(),
                       style: TextStyle(
-                          color: primaryTextColor,
+                          color: textBlackColor,
                           fontWeight: FontWeight.w700,
                           fontSize: 16),
                     )
                         : Text(
                       "Text is hidden",
                       style: TextStyle(
-                          color: primaryTextColor,
+                          color: textBlackColor,
                           fontWeight: FontWeight.w700,
                           fontSize: 16),
                     ),
@@ -137,7 +137,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                     children: [
                       IconButton(
                         icon: Icon(Icons.remove_red_eye),
-                        color: primaryTextColor,
+                        color: textBlackColor,
                         onPressed: () {
                           setState(() {
                             _isTextVisible = !_isTextVisible;

@@ -88,12 +88,12 @@ class _MessageInputFieldState extends State<MessageInputField>
             margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
             padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: secondaryBackgroundColor,
-              border: Border.all(color: primaryBorderColor, width: 1.5),
+              color: lightGreyColor,
+              border: Border.all(color: blackBorderColor, width: 1.5),
               borderRadius: BorderRadius.all(Radius.circular(20.0)),
             ),
             child: Material(
-              color: secondaryBackgroundColor,
+              color: lightGreyColor,
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: Row(
@@ -106,13 +106,13 @@ class _MessageInputFieldState extends State<MessageInputField>
                     Expanded(
                       child: TextField(
                         focusNode: widget.focusNode,
-                        style: const TextStyle(color: primaryTextColor),
+                        style: const TextStyle(color: textBlackColor),
                         controller: widget.textEditingController,
                         onSubmitted: widget.onSubmitted,
                         decoration: const InputDecoration.collapsed(
                           hintText: "Let's go!",
                           hintStyle: TextStyle(
-                            color: tertiaryTextColor,
+                            color: textDarkGreyColor,
                           ),
                         ),
                       ),

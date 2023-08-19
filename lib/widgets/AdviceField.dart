@@ -22,7 +22,7 @@ class AdviceFieldState extends State<AdviceField> {
         height: MediaQuery.of(context).size.height * 0.125,
         margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
         decoration: BoxDecoration(
-          color: secondaryBackgroundColor,
+          color: lightGreyColor,
           border: Border.all(color: Colors.black87, width: 1.5),
           borderRadius: BorderRadius.all(Radius.circular(20.0)),
         ),
@@ -32,7 +32,7 @@ class AdviceFieldState extends State<AdviceField> {
             Expanded(
               flex: (widget.placeholderHeightFactor * 10).toInt(),
               child: Container(
-                color: secondaryBackgroundColor,
+                color: lightGreyColor,
               ),
             ),
    
@@ -42,7 +42,7 @@ class AdviceFieldState extends State<AdviceField> {
                 margin: EdgeInsets.all(10.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
-                  color: textFieldBackgroundColor,
+                  color: textFieldBgColor,
                 ),
                 child: SingleChildScrollView(
                   child: Padding(
@@ -66,7 +66,7 @@ class AdviceFieldState extends State<AdviceField> {
                               ? 'Free to ask!'
                               : chatProvider.getTranslation,
                           style: TextStyle(
-                              color: whiteTextColor,
+                              color: textWhiteColor,
                               fontWeight: FontWeight.w700,
                               fontSize: 16),
                         ),

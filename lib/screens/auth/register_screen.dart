@@ -20,12 +20,12 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: primaryBackgroundColor,
+      backgroundColor: whiteColor,
       appBar: AppBar(
-        backgroundColor: primaryAppBarColor,
+        backgroundColor: appBarBgColor,
         elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle.dark,
-        iconTheme: appBarIconTheme,
+        iconTheme: appBarIconThemeData,
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -41,7 +41,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     style: TextStyle(
                       fontSize: 48,
                       fontWeight: FontWeight.bold,
-                      color: primaryTextColor,
+                      color: textBlackColor,
                     ),
                   ),
                   SizedBox(height: 40),

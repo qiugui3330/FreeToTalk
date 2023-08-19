@@ -22,7 +22,7 @@ class CustomElevatedButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(30),
         ),
       ),
-      child: Text(text, style: TextStyle(fontSize: 20, color: primaryButtonTextColor)),
+      child: Text(text, style: TextStyle(fontSize: 20, color: whiteButtonTextColor)),
       onPressed: onPressed,
     );
   }

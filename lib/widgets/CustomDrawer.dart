@@ -47,14 +47,14 @@ class CustomDrawer extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: secondaryBackgroundColor,
+          backgroundColor: lightGreyColor,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: Text(
             'Create a New Roleplay Dialogue',
             style: TextStyle(
               fontSize: 24.0,
               fontWeight: FontWeight.bold,
-              color: primaryTextColor,
+              color: textBlackColor,
             ),
           ),
           content: SingleChildScrollView(
@@ -105,13 +105,13 @@ class CustomDrawer extends StatelessWidget {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel', style: TextStyle(color: redTextColor)),
+              child: Text('Cancel', style: TextStyle(color: textRedColor)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Submit', style: TextStyle(color: greenTextColor)),
+              child: Text('Submit', style: TextStyle(color: textGreenColor)),
               onPressed: () {
                 if (userRoleController.text.isEmpty &&
                     aiRoleController.text.isEmpty &&
@@ -150,18 +150,18 @@ class CustomDrawer extends StatelessWidget {
           UserAccountsDrawerHeader(
             accountName: Text(
               user.username,
-              style: TextStyle(color: primaryTextColor),
+              style: TextStyle(color: textBlackColor),
             ),
             accountEmail: Text(
               user.email,   
-              style: TextStyle(color: primaryTextColor),
+              style: TextStyle(color: textBlackColor),
             ),
             currentAccountPicture: CircleAvatar(
               backgroundImage: AssetImage(AssetsManager
                   .openaiLogo),   
             ),
             decoration: BoxDecoration(
-              color: primaryAppBarColor,
+              color: appBarBgColor,
             ),
           ),
           ListTile(

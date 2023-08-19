@@ -17,12 +17,12 @@ class LoginPage extends StatelessWidget {
     Provider.of<AuthProvider>(context, listen: false).context = context;
 
     return Scaffold(
-      backgroundColor: primaryBackgroundColor,
+      backgroundColor: whiteColor,
       appBar: AppBar(
-        backgroundColor: primaryAppBarColor,
+        backgroundColor: appBarBgColor,
         elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle.dark,
-        iconTheme: appBarIconTheme,
+        iconTheme: appBarIconThemeData,
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -38,7 +38,7 @@ class LoginPage extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 48,
                       fontWeight: FontWeight.bold,
-                      color: primaryTextColor,
+                      color: textBlackColor,
                     ),
                   ),
                   SizedBox(height: 40),
@@ -103,7 +103,7 @@ class LoginPage extends StatelessWidget {
                     child: Text(
                       'Don\'t have an account? Register',
                       style: TextStyle(
-                        color: tertiaryTextColor,
+                        color: textDarkGreyColor,
                         decoration: TextDecoration.underline,
                       ),
                     ),

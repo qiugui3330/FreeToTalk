@@ -86,9 +86,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       title: 'FreeToTalk',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          scaffoldBackgroundColor: primaryBackgroundColor,
+          scaffoldBackgroundColor: whiteColor,
           appBarTheme: AppBarTheme(
-            color: secondaryBackgroundColor,
+            color: lightGreyColor,
           )),
       home: FutureBuilder<User?>(
         future: _loggedInUserFuture,

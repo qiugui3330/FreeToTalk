@@ -85,7 +85,7 @@ class _SendButtonState extends State<SendButton> {
             width: 1.5,
           ),
           borderRadius: BorderRadius.circular(30),
-          color: primaryBackgroundColor,
+          color: whiteColor,
         ),
         child: Column(
           children: [
@@ -94,7 +94,7 @@ class _SendButtonState extends State<SendButton> {
                 onPressed: sendMessageWrapper,
                 icon: const Icon(
                   LineAwesomeIcons.telegram_plane,
-                  color: yellowIconColor,
+                  color: iconYellowColor,
                   size: 30,
                 ),
               ),
