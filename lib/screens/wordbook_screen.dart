@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../constants/constants.dart';
 import '../database/database_service.dart';
 import '../services/TtsService.dart';
 
@@ -33,13 +34,11 @@ class _WordBookPageState extends State<WordBookPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text(
-          'Word Book',
-          style: TextStyle(color: Colors.black),
-        ),
-        backgroundColor: Color.fromRGBO(244, 243, 246, 1),
-        iconTheme: IconThemeData(color: Colors.black),
+        title: Text('Word Book', style: appBarTitleStyle),
+        backgroundColor: appBarBackgroundColor,
+        iconTheme: appBarIconTheme,
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _wordsFuture,
@@ -48,11 +47,8 @@ class _WordBookPageState extends State<WordBookPage> {
             if (snapshot.hasData && snapshot.data!.isNotEmpty) {
               final groupedWords = groupByDate(snapshot.data!);
               return ListView(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(16.0),
                 children: groupedWords.entries.map((entry) {
-                  double screenWidth = MediaQuery.of(context).size.width;
-                  double cardWidth = screenWidth - 16.0;
-
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -60,50 +56,51 @@ class _WordBookPageState extends State<WordBookPage> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Text(
                           entry.key,
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
                         ),
                       ),
                       ...entry.value.map((word) {
-                        return Container(
-                          width: cardWidth,
-                          child: Card(
-                            color: Colors.grey[200],
-                            margin: EdgeInsets.only(bottom: 8.0),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (word['word'] != null)
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(word['word']!, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black)),
-                                        IconButton(
-                                          icon: Icon(Icons.play_arrow, color: Colors.grey[400]),
-                                          onPressed: () => _ttsService.speak(word['word']!),
-                                        ),
-                                      ],
-                                    ),
-                                  SizedBox(height: 3.0),
-                                  if (word['translation'] != null)
-                                    Text(word['translation']!, style: TextStyle(fontSize: 16, color: Colors.black)),
-                                  SizedBox(height: 3.0),
-                                  if (word['originalSentence'] != null)
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Flexible(
-                                          child: Text(word['originalSentence']!, style: TextStyle(fontSize: 16, color: Colors.black)),
-                                        ),
-                                        IconButton(
-                                          icon: Icon(Icons.play_arrow, color: Colors.grey[400]),
-                                          onPressed: () => _ttsService.speak(word['originalSentence']!),
-                                        ),
-                                      ],
-                                    ),
-                                ],
-                              ),
+                        return Card(
+                          color: cardColor,
+                          margin: EdgeInsets.only(bottom: 16.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                            side: BorderSide(color: Colors.black87, width: 1.5),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (word['word'] != null)
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(word['word']!, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87)),
+                                      IconButton(
+                                        icon: Icon(Icons.play_arrow, color: Colors.grey[400]),
+                                        onPressed: () => _ttsService.speak(word['word']!),
+                                      ),
+                                    ],
+                                  ),
+                                SizedBox(height: 8.0),
+                                if (word['translation'] != null)
+                                  Text(word['translation']!, style: TextStyle(fontSize: 16, color: Colors.black87)),
+                                SizedBox(height: 8.0),
+                                if (word['originalSentence'] != null)
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Flexible(
+                                        child: Text(word['originalSentence']!, style: TextStyle(fontSize: 16, color: Colors.black87)),
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.play_arrow, color: Colors.grey[400]),
+                                        onPressed: () => _ttsService.speak(word['originalSentence']!),
+                                      ),
+                                    ],
+                                  ),
+                              ],
                             ),
                           ),
                         );
@@ -113,7 +110,7 @@ class _WordBookPageState extends State<WordBookPage> {
                 }).toList(),
               );
             } else {
-              return Center(child: Text('No words found.', style: TextStyle(color: Colors.black)));
+              return Center(child: Text('No words found.', style: TextStyle(color: Colors.black87, fontSize: 18)));
             }
           } else {
             return Center(child: CircularProgressIndicator());
@@ -122,5 +119,4 @@ class _WordBookPageState extends State<WordBookPage> {
       ),
     );
   }
-
 }
