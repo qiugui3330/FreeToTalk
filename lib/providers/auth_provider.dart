@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../screens/auth/login_page.dart';
+import '../screens/auth/login_screen.dart';
 import '../database/models/user_model.dart';
 import '../services/authentication_service.dart';
 import '../screens/chat_screen.dart';

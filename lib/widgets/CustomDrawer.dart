@@ -6,7 +6,7 @@ import '../providers/messages_provider.dart';
 import '../providers/conversation_provider.dart';
 import '../screens/wordbook_screen.dart';
 import '../services/assets_manager.dart';
-import 'package:chatgpt_course/screens/auth/login_page.dart';
+import 'package:chatgpt_course/screens/auth/login_screen.dart';
 import '../database/models/user_model.dart';
 import 'CustomTextField.dart';
 

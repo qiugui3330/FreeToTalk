@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:chatgpt_course/widgets/CustomTextField.dart';
 import 'package:provider/provider.dart';
-import 'package:chatgpt_course/screens/auth/register_page.dart';
+import 'package:chatgpt_course/screens/auth/register_screen.dart';
 import '../../providers/auth_provider.dart';
 
 class LoginPage extends StatelessWidget {
