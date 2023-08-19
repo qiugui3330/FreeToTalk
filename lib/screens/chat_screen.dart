@@ -8,6 +8,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../constants/theme_constants.dart';
 import '/widgets/ChatMessageList.dart';
 import '/widgets/MessageInputField.dart';
 import '../services/assets_manager.dart';
@@ -54,9 +55,11 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
         appBar: AppBar(
           elevation: 2,
+          backgroundColor: primaryAppBarColor,
+          iconTheme: appBarIconTheme,
           leading: Builder(builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(LineAwesomeIcons.bars, color: Colors.black),
+              icon: Icon(LineAwesomeIcons.bars, color: primaryIconColor),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
@@ -84,7 +87,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   children: [
                     Text(
                       'FreeToTalk',
-                      style: TextStyle(color: Colors.black87),
+                      style: TextStyle(color: primaryTextColor),
                     ),
                     SizedBox(
                       height: 4,
@@ -95,7 +98,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           provider.getCurrentModelName() ?? 'Default mode',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.green,
+                            color: greenTextColor,
                             fontWeight: FontWeight.bold,
                           ),
                         );
@@ -114,7 +117,7 @@ class _ChatScreenState extends State<ChatScreen> {
               builder: (context, conversationProvider, child) {
                 return conversationProvider.getCurrentConversation() != null
                     ? IconButton(
-                        icon: Icon(Icons.exit_to_app, color: Colors.black),
+                        icon: Icon(Icons.exit_to_app, color: primaryIconColor),
                         onPressed: () {
                           String modelName =
                               conversationProvider.getCurrentModelName() ??
@@ -157,7 +160,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       Align(
                         alignment: Alignment.topCenter,
                         child: const SpinKitThreeBounce(
-                          color: Colors.black87,
+                          color: spinKitColor,
                           size: 18,
                         ),
                       ),
@@ -197,7 +200,7 @@ class _ChatScreenState extends State<ChatScreen> {
           content: TextWidget(
             label: "You cant send multiple messages at a time",
           ),
-          backgroundColor: Colors.red,
+          backgroundColor: snackBarBackgroundColor,
         ),
       );
       return;
@@ -208,7 +211,7 @@ class _ChatScreenState extends State<ChatScreen> {
           content: TextWidget(
             label: "Please type a message",
           ),
-          backgroundColor: Colors.red,
+          backgroundColor: snackBarBackgroundColor,
         ),
       );
       return;
@@ -230,7 +233,7 @@ class _ChatScreenState extends State<ChatScreen> {
         content: TextWidget(
           label: error.toString(),
         ),
-        backgroundColor: Colors.red,
+        backgroundColor: snackBarBackgroundColor,
       ));
     } finally {
       setState(() {

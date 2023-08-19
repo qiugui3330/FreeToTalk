@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../constants/constants.dart';
+import '../constants/theme_constants.dart';
 import '../database/database_service.dart';
 import '../services/TtsService.dart';
 
@@ -34,10 +34,10 @@ class _WordBookPageState extends State<WordBookPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: scaffoldBackgroundColor,
+      backgroundColor: primaryBackgroundColor,
       appBar: AppBar(
-        title: Text('Word Book', style: appBarTitleStyle),
-        backgroundColor: appBarBackgroundColor,
+        title: Text('Word Book', style: primaryAppBarTextStyle),
+        backgroundColor: primaryAppBarColor,
         iconTheme: appBarIconTheme,
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
@@ -61,7 +61,7 @@ class _WordBookPageState extends State<WordBookPage> {
                       ),
                       ...entry.value.map((word) {
                         return Card(
-                          color: cardColor,
+                          color: secondaryBackgroundColor,
                           margin: EdgeInsets.only(bottom: 16.0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),

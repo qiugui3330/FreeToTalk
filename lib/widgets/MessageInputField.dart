@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import '../constants/constants.dart';
+import '../constants/theme_constants.dart';
 import '../providers/messages_provider.dart';
 import 'SendButton.dart';
 import 'AdviceField.dart';
@@ -93,7 +93,7 @@ class _MessageInputFieldState extends State<MessageInputField>
               borderRadius: BorderRadius.all(Radius.circular(20.0)),
             ),
             child: Material(
-              color: cardColor,
+              color: secondaryBackgroundColor,
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: Row(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
-import '../constants/constants.dart';
+import '../constants/theme_constants.dart';
 import '../database/models/conversation_model.dart';
 import '../database/database_service.dart';
 import '../providers/messages_provider.dart';
@@ -60,39 +60,46 @@ class CustomDrawer extends StatelessWidget {
           content: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              child: Column(
-                children: <Widget>[
-                  SizedBox(height: 20),
-                  CustomTextField(
-                    controller: userRoleController,
-                    labelText: 'User Role',
-                    hintText: 'Please enter user role',
-                  ),
-                  SizedBox(height: 20),
-                  CustomTextField(
-                    controller: aiRoleController,
-                    labelText: 'AI Role',
-                    hintText: 'Please enter AI role',
-                  ),
-                  SizedBox(height: 20),
-                  CustomTextField(
-                    controller: locationController,
-                    labelText: 'Location of Dialogue',
-                    hintText: 'Please enter location of dialogue',
-                  ),
-                  SizedBox(height: 20),
-                  CustomTextField(
-                    controller: timeController,
-                    labelText: 'Time of Dialogue',
-                    hintText: 'Please enter time of dialogue',
-                  ),
-                  SizedBox(height: 20),
-                  CustomTextField(
-                    controller: otherInfoController,
-                    labelText: 'Other Information',
-                    hintText: 'Please enter other information',
-                  ),
-                ],
+              child: FormBuilder(
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(height: 20),
+                    CustomTextField(
+                      name: 'userRole',
+                      labelText: 'User Role',
+                      hintText: 'Please enter user role',
+                      controller: userRoleController,
+                    ),
+                    SizedBox(height: 20),
+                    CustomTextField(
+                      name: 'aiRole',
+                      labelText: 'AI Role',
+                      hintText: 'Please enter AI role',
+                      controller: aiRoleController,
+                    ),
+                    SizedBox(height: 20),
+                    CustomTextField(
+                      name: 'location',
+                      labelText: 'Location of Dialogue',
+                      hintText: 'Please enter location of dialogue',
+                      controller: locationController,
+                    ),
+                    SizedBox(height: 20),
+                    CustomTextField(
+                      name: 'time',
+                      labelText: 'Time of Dialogue',
+                      hintText: 'Please enter time of dialogue',
+                      controller: timeController,
+                    ),
+                    SizedBox(height: 20),
+                    CustomTextField(
+                      name: 'otherInfo',
+                      labelText: 'Other Information',
+                      hintText: 'Please enter other information',
+                      controller: otherInfoController,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -124,6 +131,7 @@ class CustomDrawer extends StatelessWidget {
                     'time': timeController.text.isEmpty ? 'Not specified' : timeController.text,
                     'otherInfo': otherInfoController.text.isEmpty ? 'Not specified' : otherInfoController.text,
                   });
+                  Navigator.of(context).pop();
                 }
               },
             ),

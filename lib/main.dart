@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'services/authentication_service.dart';
-import 'constants/constants.dart';
+import 'constants/theme_constants.dart';
 import 'providers/messages_provider.dart';
 import '/screens/auth/login_screen.dart';
 import 'screens/chat_screen.dart';
@@ -86,9 +86,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       title: 'FreeToTalk',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          scaffoldBackgroundColor: scaffoldBackgroundColor,
+          scaffoldBackgroundColor: primaryBackgroundColor,
           appBarTheme: AppBarTheme(
-            color: cardColor,
+            color: secondaryBackgroundColor,
           )),
       home: FutureBuilder<User?>(
         future: _loggedInUserFuture,

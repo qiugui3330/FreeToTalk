@@ -5,7 +5,9 @@ import 'package:chatgpt_course/providers/auth_provider.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
-import '../../constants/constants.dart';
+import '../../constants/theme_constants.dart';
+import '../../widgets/CustomTextField.dart'; // 引入自定义的文本框
+import '../../widgets/CustomElevatedButton.dart'; // 引入自定义的按钮
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -18,9 +20,9 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: scaffoldBackgroundColor,
+      backgroundColor: primaryBackgroundColor,
       appBar: AppBar(
-        backgroundColor: appBarBackgroundColor,
+        backgroundColor: primaryAppBarColor,
         elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         iconTheme: appBarIconTheme,
@@ -39,77 +41,46 @@ class _RegisterPageState extends State<RegisterPage> {
                     style: TextStyle(
                       fontSize: 48,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      color: primaryTextColor,
                     ),
                   ),
                   SizedBox(height: 40),
-                  FormBuilderTextField(
+                  CustomTextField(
                     name: 'username',
-                    decoration: InputDecoration(
-                      labelText: 'Username',
-                      hintText: 'Please enter username',
-                      labelStyle: TextStyle(color: Colors.black87),
-                      hintStyle: TextStyle(color: Colors.black54),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                    ),
+                    labelText: 'Username',
+                    hintText: 'Please enter username',
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
                       FormBuilderValidators.minLength(5),
                       FormBuilderValidators.maxLength(15),
                     ]),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
                   ),
                   SizedBox(height: 20),
-                  FormBuilderTextField(
+                  CustomTextField(
                     name: 'email',
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      hintText: 'Please enter email',
-                      labelStyle: TextStyle(color: Colors.black87),
-                      hintStyle: TextStyle(color: Colors.black54),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                    ),
+                    labelText: 'Email',
+                    hintText: 'Please enter email',
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
                       FormBuilderValidators.email(),
                     ]),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
                   ),
                   SizedBox(height: 20),
-                  FormBuilderTextField(
+                  CustomTextField(
                     name: 'password',
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      hintText: 'Please enter password',
-                      labelStyle: TextStyle(color: Colors.black87),
-                      hintStyle: TextStyle(color: Colors.black54),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                    ),
+                    labelText: 'Password',
+                    hintText: 'Please enter password',
                     obscureText: true,
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
                       FormBuilderValidators.minLength(8),
                     ]),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
                   ),
                   SizedBox(height: 20),
-                  FormBuilderTextField(
+                  CustomTextField(
                     name: 'confirmPassword',
-                    decoration: InputDecoration(
-                      labelText: 'Confirm Password',
-                      hintText: 'Please confirm password',
-                      labelStyle: TextStyle(color: Colors.black87),
-                      hintStyle: TextStyle(color: Colors.black54),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                    ),
+                    labelText: 'Confirm Password',
+                    hintText: 'Please confirm password',
                     obscureText: true,
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
@@ -120,19 +91,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         return null;
                       },
                     ]),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
                   ),
                   SizedBox(height: 30),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Color(0xFF2E7D32), // 使用深绿色
-                      padding: EdgeInsets.symmetric(horizontal: 100, vertical: 20),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
+                  CustomElevatedButton(
+                    text: 'Register',
                     onPressed: _submitForm,
-                    child: Text('Register', style: TextStyle(fontSize: 20, color: Colors.white)),
                   ),
                 ],
               ),

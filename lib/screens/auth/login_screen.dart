@@ -3,9 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
 import 'package:chatgpt_course/screens/auth/register_screen.dart';
-import '../../constants/constants.dart';
+import '../../constants/theme_constants.dart';
 import '../../providers/auth_provider.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import '../../widgets/CustomTextField.dart';
+import '../../widgets/CustomElevatedButton.dart';
 
 class LoginPage extends StatelessWidget {
   final _formKey = GlobalKey<FormBuilderState>();
@@ -15,9 +17,9 @@ class LoginPage extends StatelessWidget {
     Provider.of<AuthProvider>(context, listen: false).context = context;
 
     return Scaffold(
-      backgroundColor: scaffoldBackgroundColor,
+      backgroundColor: primaryBackgroundColor,
       appBar: AppBar(
-        backgroundColor: appBarBackgroundColor,
+        backgroundColor: primaryAppBarColor,
         elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         iconTheme: appBarIconTheme,
@@ -36,38 +38,24 @@ class LoginPage extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 48,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      color: primaryTextColor,
                     ),
                   ),
                   SizedBox(height: 40),
-                  FormBuilderTextField(
+                  CustomTextField(
                     name: 'email',
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      hintText: 'Enter your email',
-                      labelStyle: TextStyle(color: Colors.black87),
-                      hintStyle: TextStyle(color: Colors.black54),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                    ),
+                    labelText: 'Email',
+                    hintText: 'Enter your email',
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
                       FormBuilderValidators.email(),
                     ]),
                   ),
                   SizedBox(height: 20),
-                  FormBuilderTextField(
+                  CustomTextField(
                     name: 'password',
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      hintText: 'Enter your password',
-                      labelStyle: TextStyle(color: Colors.black87),
-                      hintStyle: TextStyle(color: Colors.black54),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                    ),
+                    labelText: 'Password',
+                    hintText: 'Enter your password',
                     obscureText: true,
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
@@ -75,15 +63,8 @@ class LoginPage extends StatelessWidget {
                     ]),
                   ),
                   SizedBox(height: 30),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Color(0xFF2E7D32),
-                      padding: EdgeInsets.symmetric(horizontal: 100, vertical: 20),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    child: Text('Login', style: TextStyle(fontSize: 20, color: Colors.white)),
+                  CustomElevatedButton(
+                    text: 'Login',
                     onPressed: () async {
                       if (_formKey.currentState!.saveAndValidate()) {
                         // 获取表单值
@@ -122,7 +103,7 @@ class LoginPage extends StatelessWidget {
                     child: Text(
                       'Don\'t have an account? Register',
                       style: TextStyle(
-                        color: Colors.grey[800],
+                        color: tertiaryTextColor,
                         decoration: TextDecoration.underline,
                       ),
                     ),
