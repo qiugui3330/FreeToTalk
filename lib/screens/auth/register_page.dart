@@ -1,12 +1,14 @@
-import 'package:chatgpt_course/auth/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
-import '../services/authentication_service.dart';
-import '../widgets/CustomTextField.dart';
-import 'login_page.dart';
+import 'package:chatgpt_course/providers/auth_provider.dart';
+import 'package:chatgpt_course/widgets/CustomTextField.dart';
 
-class RegisterPageState extends State<RegisterPage> {
+class RegisterPage extends StatefulWidget {
+  @override
+  _RegisterPageState createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _username = TextEditingController();
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
@@ -105,40 +107,14 @@ class RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  void _submitForm() async {
+  void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      String? registerResult = await Provider.of<AuthProvider>(context, listen: false).register(
+      Provider.of<AuthProvider>(context, listen: false).registerAndNavigate(
         _username.text,
         _email.text,
         _password.text,
+        context,
       );
-
-      if (registerResult == null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
-        );
-      } else {
-        _showErrorDialog(registerResult);
-      }
     }
-  }
-
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Error'),
-        content: Text(message),
-        actions: <Widget>[
-          TextButton(
-            child: Text('Okay'),
-            onPressed: () {
-              Navigator.of(ctx).pop();
-            },
-          ),
-        ],
-      ),
-    );
   }
 }
